@@ -37,7 +37,7 @@ Once a feature is complete and you are ready to merge there is a two-step proces
 
 ----------PIPELINE----------
 
-Updating Your Branch
+## Updating Your Branch
 
 **Before doing anything on any branch or when starting a new work session, make sure that your working tree is clear and your branch is up to date.**
 
@@ -53,7 +53,7 @@ Basic workflow while on any branch
 
 This is the workflow that everyone will follow while on their own branch.
 
-General Workflow
+## General Workflow
 
 **Important note: You do not need to include <> in any of the following commands, they are just being used to differentiate the command from a file/folder name**
 
@@ -74,30 +74,30 @@ General Workflow
 	4. git push (Pushes files to the remote repository ON YOUR CURRENT BRANCH)
 
 
-Branch Management Workflow
+## Branch Management Workflow
 
-Branch Naming Conventions:
+### Branch Naming Conventions:
 
 	All feature branches should follow this naming convention: feature_featureName
 
-Example of creating a feature branch for player movement:
+### Example of creating a feature branch for player movement:
 
 	git checkout -b feature_playerMovement
 
-Creating a new branch
+### Creating a new branch
 
 	git checkout -b <branch name>    (Creates a new branch and switches to it)
 	git push --set-upstream origin <branch name> (Pushes branch to the remote repository)
 
-Deleting a branch
+### Deleting a branch
 
 	git branch -d <branch name>
 
-Swapping to a different branch
+### Swapping to a different branch
 
 	git checkout <branch name>
 
-Merging branches
+### Merging branches
 
 **Merging branches should only be done once a feature is complete unless the programmers are unified in awareness and agreement.**
 
@@ -133,7 +133,7 @@ Example merging test branch into dev:
 
 **If you run into merge conflicts and are having trouble ask for help**
 
-Tagging
+## Tagging
 
 A tag in Git for this project is a pointer to a specific commit.
 We will use tags for testing builds. This will make it easy to refer back to different stages of the project if needed.
@@ -154,13 +154,13 @@ To create a tag on a commit, use the git tag command with one or both of the fol
 
 	To list all of the tags that have been created, use the git tag command.
 
-Artist Pipeline
+## Artist Pipeline
 
 Asset Location
 
 Neresnica/$(Unreal Project Name)/Content/$(The appropriate folder for the type of asset that you are adding)/
 
-Pushing Assets in Git (Artists)
+### Pushing Assets in Git (Artists)
 
 	1. Make sure you are on the dev branch
 	2. git checkout dev
