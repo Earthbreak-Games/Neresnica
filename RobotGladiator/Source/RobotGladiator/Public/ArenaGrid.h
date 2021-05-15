@@ -20,6 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnFloor(FVector origin, int size, int radius, int padding);
 
+	UFUNCTION(BlueprintCallable)
+	void ClearFloor();
+
 	void InitHexGrid(int radius);
 
 public:
@@ -29,6 +32,9 @@ public:
 	TArray<AActor*> FloorPieces;
 
 	TArray<HexCell> Cells;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Radius;
 
 protected:
 	// Called when the game starts or when spawned

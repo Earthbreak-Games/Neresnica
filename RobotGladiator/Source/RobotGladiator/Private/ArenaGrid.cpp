@@ -8,12 +8,13 @@ AArenaGrid::AArenaGrid()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Radius = 1.0f;
 }
 
 void AArenaGrid::SpawnFloor(FVector origin, int size, int radius, int padding)
 {
 	InitHexGrid(radius);
-	for (int i = 0; i < radius; i++)
+	for (int i = 0; i < Cells.Num(); i++)
 	{
 		FActorSpawnParameters spawnParams;
 		spawnParams.Owner = this;
@@ -24,8 +25,23 @@ void AArenaGrid::SpawnFloor(FVector origin, int size, int radius, int padding)
 		if (FloorPieceActor)
 		{
 			AActor* floorPiece = GetWorld()->SpawnActor<AActor>(FloorPieceActor, spawnLoc, this->GetActorRotation(), spawnParams);
+			FloorPieces.Add(floorPiece);
 		}
 	}
+}
+
+void AArenaGrid::ClearFloor()
+{
+	for (int i = 0; i < FloorPieces.Num(); i++)
+	{
+		if (FloorPieces[i])
+		{
+			FloorPieces[i]->Destroy();
+		}
+	}
+
+	FloorPieces.Empty();
+	Cells.Empty();
 }
 
 void AArenaGrid::InitHexGrid(int radius)
@@ -34,7 +50,7 @@ void AArenaGrid::InitHexGrid(int radius)
 	{
 		int rowMax = FMath::Max(-radius, -col - radius);
 		int rowMin = FMath::Min(radius, -col + radius);
-		for (int row = rowMin; row < rowMax; row++)
+		for (int row = rowMax; row < rowMin; row++)
 		{
 			Cells.Add(HexCell(col, row, -col - row));
 		}
