@@ -24,7 +24,7 @@ public:
 
 	// Spawns initialized grid into the scene
 	UFUNCTION(BlueprintCallable)
-	void SpawnFloor(FVector origin, int radius, int padding);
+	void SpawnFloor(FVector origin, int radius, float padding);
 
 	// Clears the currently generated floor
 	UFUNCTION(BlueprintCallable)
@@ -43,6 +43,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Radius;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Padding;
 
 protected:
 	// Called when the game starts or when spawned

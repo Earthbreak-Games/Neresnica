@@ -14,6 +14,7 @@ AArenaGrid::AArenaGrid()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Radius = 1.0f;
+	Padding = 1.0f;
 }
 
 /*
@@ -23,7 +24,7 @@ AArenaGrid::AArenaGrid()
 *	- Param radius: the radius of the grid
 *	- Param padding the amount of padding between each cell in the grid
 */
-void AArenaGrid::SpawnFloor(FVector origin, int radius, int padding)
+void AArenaGrid::SpawnFloor(FVector origin, int radius, float padding)
 {
 	// Initialize hex grid data
 	InitHexGrid(radius);
@@ -51,7 +52,12 @@ void AArenaGrid::SpawnFloor(FVector origin, int radius, int padding)
 			FVector tileOffset = FVector(xPos, yPos, GetTransform().GetLocation().Z) * padding;
 
 			// Spawn new tile
-			AActor* floorPiece = GetWorld()->SpawnActor<AActor>(FloorPieceActor, spawnLoc + tileOffset, this->GetActorRotation(), spawnParams);
+			FRotator rot = this->GetActorRotation();
+			
+			AActor* floorPiece = GetWorld()->SpawnActor<AActor>(FloorPieceActor, spawnLoc + tileOffset, rot, spawnParams);
+
+			rot = FRotator(0.0f, 30.0f, 0.0f);
+			floorPiece->AddActorLocalRotation(rot);
 			FloorPieces.Add(floorPiece);
 		}
 	}
