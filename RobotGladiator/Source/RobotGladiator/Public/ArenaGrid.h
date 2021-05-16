@@ -1,4 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+* ArenaGrid.h
+* Purpose: Declares the Arena Grid class which is responsible for generating and managing a hexagonal grid
+* Dependencies: HexCell.h
+* Primary Author: Ethan Heil
+*/
 
 #pragma once
 
@@ -17,12 +22,15 @@ public:
 	// Sets default values for this actor's properties
 	AArenaGrid();
 
+	// Spawns initialized grid into the scene
 	UFUNCTION(BlueprintCallable)
-	void SpawnFloor(FVector origin, int size, int radius, int padding);
+	void SpawnFloor(FVector origin, int radius, int padding);
 
+	// Clears the currently generated floor
 	UFUNCTION(BlueprintCallable)
 	void ClearFloor();
 
+	// Initializes the hex grid's data
 	void InitHexGrid(int radius);
 
 public:
