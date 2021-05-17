@@ -45,6 +45,10 @@ public:
 	int Radius;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Padding;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MinHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxHeight;
 
 protected:
 	// Called when the game starts or when spawned

@@ -13,8 +13,11 @@ AArenaGrid::AArenaGrid()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Initialize members
 	Radius = 1.0f;
 	Padding = 1.0f;
+	MinHeight = 0.0f;
+	MaxHeight = 1500.0f;
 }
 
 /*
@@ -49,18 +52,26 @@ void AArenaGrid::SpawnFloor(FVector origin, int radius, float padding)
 			// Calculate tile offset. See https://www.redblobgames.com/grids/hexagons/ (Hex to pixel section) for more info on coordinate conversion
 			float xPos = padding * (FMath::Sqrt(3) * currentCell.GetQ() + FMath::Sqrt(3) / 2 * currentCell.GetR());
 			float yPos = padding * (3.0f/ 2.0f * currentCell.GetR());
-			FVector tileOffset = FVector(xPos, yPos, GetTransform().GetLocation().Z) * padding;
+
+			FVector tileOffset;
+			if(currentCell.GetQ() == 0 && currentCell.GetR() == 0)
+				tileOffset = FVector(xPos, yPos, MaxHeight);
+			else
+				tileOffset = FVector(xPos, yPos, GetTransform().GetLocation().Z) * padding;
 
 			// Spawn new tile
 			FRotator rot = this->GetActorRotation();
-			
 			AActor* floorPiece = GetWorld()->SpawnActor<AActor>(FloorPieceActor, spawnLoc + tileOffset, rot, spawnParams);
 
+			// Child new floor piece to the grid object
 			FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
 			floorPiece->AttachToActor(this, attachRules);
 
+			// Set the correct rotation of the floor piece
 			rot = FRotator(0.0f, 30.0f, 0.0f);
 			floorPiece->AddActorLocalRotation(rot);
+
+			// Add the floor piece to floor piece array
 			FloorPieces.Add(floorPiece);
 		}
 	}
