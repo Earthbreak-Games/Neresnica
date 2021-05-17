@@ -33,12 +33,21 @@ public:
 	// Initializes the hex grid's data
 	void InitHexGrid(int radius);
 
+	// Activate starting sequence for the current round
+	UFUNCTION(BlueprintCallable)
+	void StartRound();
+
+	// Activate ending sequence for the current round
+	UFUNCTION(BlueprintCallable)
+	void EndRound();
+
 public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AActor> FloorPieceActor;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<AActor*> FloorPieces;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<float> FloorHeights;
 	TArray<HexCell> Cells;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -53,6 +62,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	// Calculate new tile position using Simplex Noise
+	void CalculateTilePositions();
 
 public:	
 	// Called every frame

@@ -124,10 +124,33 @@ void AArenaGrid::InitHexGrid(int radius)
 	}
 }
 
+void AArenaGrid::StartRound()
+{
+	CalculateTilePositions();
+}
+
+void AArenaGrid::EndRound()
+{
+
+}
+
 // Called when the game starts or when spawned
 void AArenaGrid::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AArenaGrid::CalculateTilePositions()
+{
+	// **** This code is TEMPORARY, will switch to simplex noise once Henry implements it ****
+
+	FloorHeights.Empty();
+
+	for (int i = 0; i < FloorPieces.Num(); i++)
+	{
+		float height = FMath::RandRange(MinHeight, MaxHeight);
+		FloorHeights.Add(height);
+	}
 }
 
 // Called every frame
