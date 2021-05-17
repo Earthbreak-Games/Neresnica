@@ -56,6 +56,9 @@ void AArenaGrid::SpawnFloor(FVector origin, int radius, float padding)
 			
 			AActor* floorPiece = GetWorld()->SpawnActor<AActor>(FloorPieceActor, spawnLoc + tileOffset, rot, spawnParams);
 
+			FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+			floorPiece->AttachToActor(this, attachRules);
+
 			rot = FRotator(0.0f, 30.0f, 0.0f);
 			floorPiece->AddActorLocalRotation(rot);
 			FloorPieces.Add(floorPiece);
