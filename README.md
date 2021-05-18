@@ -124,12 +124,10 @@ Example merging test branch into dev:
 	7. git checkout dev    (Switch to dev branch)
 
 	(On dev branch)
-	8. git status
-	9. git fetch
-	10. git pull
-	11. git merge test (Merge test into dev)
-	12. git status
-	13. git push
+	8. Create a pull request in Github following the standard (TODO: Add link)
+	9. Request a code review from another programmer
+	10. If there are any changes requested/errors, resolve them
+	11. Once the pull request is approved, merge it in by clicking the button
 
 **If you run into merge conflicts and are having trouble ask for help**
 
