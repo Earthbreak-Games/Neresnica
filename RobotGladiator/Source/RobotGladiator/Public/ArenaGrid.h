@@ -66,6 +66,8 @@ protected:
 	// Calculate new tile position using Simplex Noise
 	void CalculateTilePositions();
 
+	void CalculateRing();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

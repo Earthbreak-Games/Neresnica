@@ -32,10 +32,35 @@ public:
 	int GetS() { return mS; }
 };
 
+// List of all 6 hex directions
+const TArray<HexCell> HexDirections = 
+{
+	HexCell(1, 0, -1), // Right
+	HexCell(1, -1, 0), // Top-Right
+	HexCell(0, -1, 1), // Top-Left
+	HexCell(-1, 0, 1), // Left
+	HexCell(-1, 1, 0), // Bottom-Left
+	HexCell(0, 1, -1), // Bottom-Right
+};
+
 // Convert from Cube coordinate to Axial coordinates
 HexCell CubeToAxial(HexCell cell);
 // Convert from Axial coordinates to Cube coordinates
 HexCell AxialToCube(HexCell cell);
+// Adds the components of two HexCells
+HexCell AddHex(HexCell a, HexCell b);
+// Subtracts the components of two HexCells
+HexCell SubtractHex(HexCell a, HexCell b);
+// Multiplies the components of a HexCell by k
+HexCell MultiplyHex(HexCell a, int k);
+// Returns the length of a HexCell vector
+int HexLength(HexCell cell);
+// Returns the distance between two HexCells
+int HexDistance(HexCell a, HexCell b);
+// Gets a direction vector of a HexCell based on the given face (0-5)
+HexCell GetHexDirection(int face);
+// Gets the neighboring cell to the given cell
+HexCell GetNeighbor(HexCell cell, int face);
 
 // Operator overloads
 bool operator==(HexCell a, HexCell b);

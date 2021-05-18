@@ -153,6 +153,14 @@ void AArenaGrid::CalculateTilePositions()
 	}
 }
 
+void AArenaGrid::CalculateRing()
+{
+	FloorHeights.Empty();
+
+	TArray<AActor> ring;
+
+}
+
 // Called every frame
 void AArenaGrid::Tick(float DeltaTime)
 {
