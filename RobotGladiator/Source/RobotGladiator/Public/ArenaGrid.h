@@ -66,7 +66,9 @@ protected:
 	// Calculate new tile position using Simplex Noise
 	void CalculateTilePositions();
 
-	void CalculateRing();
+	void CalculateRing(HexCell center, int radius);
+
+	void FillArena(HexCell center, int radius);
 
 public:	
 	// Called every frame

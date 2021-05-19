@@ -15,21 +15,25 @@ class ROBOTGLADIATOR_API HexCell
 {
 private:
 	int mQ, mR, mS;
+	int mID;
 
 public:
 	// Constructor for Cube coordinates
 	HexCell(int q, int r, int s)
-		: mQ(q), mR(r), mS(s){}
+		: mQ(q), mR(r), mS(s), mID(0){}
 	
 	// Constructor for Axial coordinates
 	HexCell(int q, int r)
-		:mQ(q), mR(r), mS(0){}
+		:mQ(q), mR(r), mS(0), mID(0){}
 
 	~HexCell();
 
 	int GetQ() { return mQ; }
 	int GetR() { return mR; }
 	int GetS() { return mS; }
+	int GetID() {return mID;}
+
+	void SetID(int id) { mID = id; }
 };
 
 // List of all 6 hex directions

@@ -32,6 +32,8 @@ void AArenaGrid::SpawnFloor(FVector origin, int radius, float padding)
 	// Initialize hex grid data
 	InitHexGrid(radius);
 
+	HexCell center = HexCell(0.0f, 0.0f, 0.0f);
+
 	// Loop through all initialized cells
 	for (int i = 0; i < Cells.Num(); i++)
 	{
@@ -48,14 +50,18 @@ void AArenaGrid::SpawnFloor(FVector origin, int radius, float padding)
 		{
 			// Get current cell
 			HexCell currentCell = CubeToAxial(Cells[i]);
+			currentCell.SetID(i);
 			
 			// Calculate tile offset. See https://www.redblobgames.com/grids/hexagons/ (Hex to pixel section) for more info on coordinate conversion
 			float xPos = padding * (FMath::Sqrt(3) * currentCell.GetQ() + FMath::Sqrt(3) / 2 * currentCell.GetR());
 			float yPos = padding * (3.0f/ 2.0f * currentCell.GetR());
 
 			FVector tileOffset;
-			if(currentCell.GetQ() == 0 && currentCell.GetR() == 0)
+			if (currentCell.GetQ() == 0 && currentCell.GetR() == 0)
+			{
 				tileOffset = FVector(xPos, yPos, MaxHeight);
+				center = currentCell;
+			}
 			else
 				tileOffset = FVector(xPos, yPos, GetTransform().GetLocation().Z) * padding;
 
@@ -75,6 +81,8 @@ void AArenaGrid::SpawnFloor(FVector origin, int radius, float padding)
 			FloorPieces.Add(floorPiece);
 		}
 	}
+
+	CalculateRing(center, radius);
 }
 
 /*
@@ -103,25 +111,19 @@ void AArenaGrid::ClearFloor()
 * InitHexGrid
 * Initializes the hex grid's data
 *	- Param radius: the radius of the hex grid
-* See https://www.redblobgames.com/grids/hexagons/implementation.html for more info 
+* See https://www.redblobgames.com/grids/hexagons/ (Rings Section) for more info 
 * on grid generation algorithms
 */
 void AArenaGrid::InitHexGrid(int radius)
 {
-	// Loop through entire column range
-	for (int col = -radius; col <= radius; col++)
-	{
-		// Calculate max and min rows on current column
-		int rowMax = FMath::Max(-radius, -col - radius);
-		int rowMin = FMath::Min(radius, -col + radius);
+	// Create center tile
+	HexCell center = HexCell(0.0f, 0.0f, 0.0f);
+	Cells.Add(center);
+	
+	// Create tiles in a ring around the center
+	for(int i = 0; i <= radius; i++)
+		CalculateRing(center, i);
 
-		// Loop through all rows on this column
-		for (int row = rowMax; row <= rowMin; row++)
-		{	
-			// Add new cell with row and column data
-			Cells.Add(HexCell(col, row, -col - row));
-		}
-	}
 }
 
 void AArenaGrid::StartRound()
@@ -153,12 +155,18 @@ void AArenaGrid::CalculateTilePositions()
 	}
 }
 
-void AArenaGrid::CalculateRing()
-{
-	FloorHeights.Empty();
+void AArenaGrid::CalculateRing(HexCell center, int radius)
+{	
+	HexCell currentCell = AddHex(center, MultiplyHex(GetHexDirection(4), radius));
 
-	TArray<AActor> ring;
-
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < radius; j++)
+		{
+			Cells.Add(currentCell);
+			currentCell = GetNeighbor(currentCell, i);
+		}
+	}
 }
 
 // Called every frame
