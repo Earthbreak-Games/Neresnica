@@ -68,8 +68,6 @@ protected:
 
 	void CalculateRing(HexCell center, int radius);
 
-	void FillArena(HexCell center, int radius);
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

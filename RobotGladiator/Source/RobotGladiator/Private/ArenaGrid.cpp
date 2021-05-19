@@ -133,7 +133,13 @@ void AArenaGrid::StartRound()
 
 void AArenaGrid::EndRound()
 {
+	FloorPieces[0]->SetActorLocation(FVector(FloorPieces[0]->GetActorLocation().X, FloorPieces[0]->GetActorLocation().Y, MaxHeight));
+	for (int i = 1; i < FloorPieces.Num(); i++)
+	{
+		FloorPieces[i]->SetActorLocation(FVector(FloorPieces[i]->GetActorLocation().X, FloorPieces[i]->GetActorLocation().Y, MinHeight));
+	}
 
+	FloorHeights.Empty();
 }
 
 // Called when the game starts or when spawned
