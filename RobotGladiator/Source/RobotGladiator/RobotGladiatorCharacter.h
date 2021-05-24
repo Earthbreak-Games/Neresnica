@@ -39,6 +39,9 @@ public:
 	float BaseSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LockOnSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SprintMultiplier;
 
 protected:

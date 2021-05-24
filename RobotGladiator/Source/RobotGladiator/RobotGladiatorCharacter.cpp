@@ -32,6 +32,7 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 	BaseSpeed = 600.0f;
+	LockOnSpeed = 400.0f;
 	SprintMultiplier = 1.5f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
@@ -122,6 +123,7 @@ void ARobotGladiatorCharacter::MoveForward(float Value)
 		if (IsLockedOnEnemy)
 		{
 			Rotation = FollowCamera->GetComponentRotation();
+			GetCharacterMovement()->MaxWalkSpeed = LockOnSpeed;
 		}
 		else
 		{
@@ -145,6 +147,7 @@ void ARobotGladiatorCharacter::MoveRight(float Value)
 		if (IsLockedOnEnemy)
 		{
 			Rotation = FollowCamera->GetComponentRotation();
+			GetCharacterMovement()->MaxWalkSpeed = LockOnSpeed;
 		}
 		else
 		{
