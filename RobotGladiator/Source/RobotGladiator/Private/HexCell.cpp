@@ -1,5 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+/**
+ * HexCell.cpp
+ * Purpose: Class to define functionality for a hexagonal cell (stored in Cube coordinates).
+ * Refer to https://www.redblobgames.com/grids/hexagons/implementation.html for more info
+ * Dependencies: None
+ * Primary Author: Ethan Heil
+ */
 
 #include "HexCell.h"
 
