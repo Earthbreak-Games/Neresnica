@@ -32,10 +32,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsLockedOnEnemy;
 
-protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsSprinting;
 
-	/** Resets HMD orientation in VR. */
-	void OnResetVR();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SprintMultiplier;
+
+protected:
 
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
@@ -55,16 +61,16 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
-	/** Handler for when a touch input begins. */
-	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
+	void Sprint();
 
-	/** Handler for when a touch input stops. */
-	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+	void EndSprint();
 
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
+
+	virtual void BeginPlay() override;
 
 public:
 	/** Returns CameraBoom subobject **/

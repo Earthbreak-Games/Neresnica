@@ -31,6 +31,8 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
+	BaseSpeed = 600.0f;
+	SprintMultiplier = 1.5f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -56,48 +58,32 @@ void ARobotGladiatorCharacter::SetupPlayerInputComponent(class UInputComponent* 
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
+
+	// Set up action bindings
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ARobotGladiatorCharacter::Sprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ARobotGladiatorCharacter::EndSprint);
 
+
+	// Set up movement bindings
 	PlayerInputComponent->BindAxis("MoveForward", this, &ARobotGladiatorCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ARobotGladiatorCharacter::MoveRight);
-
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
+	
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &ARobotGladiatorCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	
+	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
+	PlayerInputComponent->BindAxis("TurnRate", this, &ARobotGladiatorCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARobotGladiatorCharacter::LookUpAtRate);
-
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &ARobotGladiatorCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &ARobotGladiatorCharacter::TouchStopped);
-
-	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ARobotGladiatorCharacter::OnResetVR);
 }
 
 
-void ARobotGladiatorCharacter::OnResetVR()
+void ARobotGladiatorCharacter::BeginPlay()
 {
-	// If RobotGladiator is added to a project via 'Add Feature' in the Unreal Editor the dependency on HeadMountedDisplay in RobotGladiator.Build.cs is not automatically propagated
-	// and a linker error will result.
-	// You will need to either:
-	//		Add "HeadMountedDisplay" to [YourProject].Build.cs PublicDependencyModuleNames in order to build successfully (appropriate if supporting VR).
-	// or:
-	//		Comment or delete the call to ResetOrientationAndPosition below (appropriate if not supporting VR)
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
-void ARobotGladiatorCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-		Jump();
-}
-
-void ARobotGladiatorCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-		StopJumping();
+	Super::BeginPlay();
+	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
 }
 
 void ARobotGladiatorCharacter::TurnAtRate(float Rate)
@@ -110,6 +96,21 @@ void ARobotGladiatorCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void ARobotGladiatorCharacter::Sprint()
+{
+	if (!IsLockedOnEnemy)
+	{
+		IsSprinting = true;
+		GetCharacterMovement()->MaxWalkSpeed = BaseSpeed * SprintMultiplier;
+	}
+}
+
+void ARobotGladiatorCharacter::EndSprint()
+{
+	IsSprinting = false;
+	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
 }
 
 void ARobotGladiatorCharacter::MoveForward(float Value)
