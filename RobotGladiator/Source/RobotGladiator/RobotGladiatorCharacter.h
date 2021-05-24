@@ -1,4 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+/*
+* RobotGladiatorCharacter.h
+* Purpose: Declares the specific functionality of our player, inherits from Unreal's generic character class
+* Dependencies: Gameframework/Character.h
+* Primary Author: Ethan Heil
+*/
 
 #pragma once
 
@@ -46,26 +52,22 @@ public:
 
 protected:
 
-	/** Called for forwards/backward input */
+	// Called for forwards/backward input
 	void MoveForward(float Value);
 
-	/** Called for side to side input */
+	// Called for side to side input
 	void MoveRight(float Value);
-
-	/** 
-	 * Called via input to turn at a given rate. 
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
+	
+	// Turns the camera left/right (with joystick)
 	void TurnAtRate(float Rate);
 
-	/**
-	 * Called via input to turn look up/down at a given rate. 
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
+	// Moves the camera up/down (with joystick)
 	void LookUpAtRate(float Rate);
 
+	// Start sprinting
 	void Sprint();
 
+	// Stop sprinting
 	void EndSprint();
 
 protected:
@@ -73,6 +75,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
 
+	// Called at the start of the current scene
 	virtual void BeginPlay() override;
 
 public:

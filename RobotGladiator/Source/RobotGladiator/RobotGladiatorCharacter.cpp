@@ -1,4 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+/*
+* RobotGladiatorCharacter.cpp
+* Purpose: Defines the specific functionality of our player
+* Dependencies: See includes
+* Primary Author: Ethan Heil
+*/
 
 #include "RobotGladiatorCharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
@@ -9,9 +15,10 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 
-//////////////////////////////////////////////////////////////////////////
-// ARobotGladiatorCharacter
-
+/*
+* ARobotGladiatorCharacter
+* Default Constructor for the player character
+*/
 ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 {
 	// Set size for collision capsule
@@ -52,9 +59,11 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
-
+/*
+* SetupPlayerInputComponent
+* Set up and bind player inputs
+*	- Param PlayerInputComponent: The input component for this character
+*/
 void ARobotGladiatorCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up gameplay key bindings
@@ -80,77 +89,122 @@ void ARobotGladiatorCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARobotGladiatorCharacter::LookUpAtRate);
 }
 
-
+/*
+* BeginPlay
+* Called at the start of a scene, used for initialization
+*/
 void ARobotGladiatorCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Set base walk speed
 	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
 }
 
+/*
+* TurnAtRate
+* Called via input to turn at a given rate, used for analog input (i.e. a joystick).
+*	-Param Rate: This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
+*/
 void ARobotGladiatorCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
+/*
+* LookUpAtRate
+* Called via input to turn look up/down at a given rate, used for analog input (i.e. a joystick).
+*	-Param Rate: This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
+*/
 void ARobotGladiatorCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+/*
+* Sprint
+* Switches the character from running to sprinting
+*/
 void ARobotGladiatorCharacter::Sprint()
 {
+	// Check if locked on to enemy
 	if (!IsLockedOnEnemy)
 	{
+		// Enable sprinting
 		IsSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = BaseSpeed * SprintMultiplier;
 	}
 }
 
+/*
+* EndSprint
+* Switches the character from sprinting to running
+*/
 void ARobotGladiatorCharacter::EndSprint()
 {
+	// Disable sprinting and reset movement speed
 	IsSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
 }
 
+/*
+* MoveForward
+* Moves the player forward/backwards based on input value
+*	Param Value: Normalized (0-1) input value from the player
+*/
 void ARobotGladiatorCharacter::MoveForward(float Value)
 {
+	// Validate player controller
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		FRotator Rotation;
 		// find out which way is forward
 		if (IsLockedOnEnemy)
 		{
+			// Use follow camera rotation
 			Rotation = FollowCamera->GetComponentRotation();
+			// Adjust player speed
 			GetCharacterMovement()->MaxWalkSpeed = LockOnSpeed;
 		}
 		else
 		{
+			// Use controller rotation
 			Rotation = Controller->GetControlRotation();
 		}
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
 }
 
+/*
+* MoveRight
+* Moves the player right/left based on input value
+*	Param Value: Normalized (0-1) input value from the player
+*/
 void ARobotGladiatorCharacter::MoveRight(float Value)
 {
+	// Validate player controller
 	if ( (Controller != nullptr) && (Value != 0.0f) )
 	{
-		// find out which way is right
 		FRotator Rotation;
 
+		// find out which way is right
 		if (IsLockedOnEnemy)
 		{
+			// Use follow camera rotation
 			Rotation = FollowCamera->GetComponentRotation();
+			// Adjust player speed
 			GetCharacterMovement()->MaxWalkSpeed = LockOnSpeed;
 		}
 		else
 		{
+			// Use controller rotation
 			Rotation = Controller->GetControlRotation();
 		}
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
