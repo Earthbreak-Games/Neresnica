@@ -53,8 +53,8 @@ ELootTypes ULootTable::ChooseItemType(EEnemyTypes enemyType, float modifier = 0.
 		float randPercent = FMath::RandRange(0, 100);
 		randPercent = FMath::Floor(randPercent);
 
-		if(randPercent <= 50.0f - modifier)
-			return CURRENCY;
+		if(randPercent <= 70.0f - modifier)
+			return HEALTH;
 		else if(randPercent <= 100.0f - modifier)
 			return ARMOR;
 	}

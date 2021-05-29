@@ -20,7 +20,7 @@ enum ERarities
 UENUM(BlueprintType)
 enum ELootTypes
 {
-	CURRENCY	UMETA(DisplayName = "Currency"),
+	HEALTH		UMETA(DisplayName = "Health"),
 	WEAPON		UMETA(DisplayName = "Weapon"),
 	ARMOR		UMETA(DisplayName = "Armor")
 };
