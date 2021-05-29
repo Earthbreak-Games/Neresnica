@@ -10,13 +10,10 @@ ULootTable::ULootTable()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
-}
-
-
-FString ULootTable::ChooseLoot()
-{
-	return TEXT("");
+	CommonPercentage = 40.0f;
+	RarePercentage = 30.0f;
+	LegendaryPercentage = 20.0f;
+	EpicPercentage = 10.0f;
 }
 
 // Called when the game starts
@@ -32,7 +29,7 @@ void ULootTable::BeginPlay()
 ERarities ULootTable::ChooseRarity(float modifier = 0.0f)
 {
 	float randPercent = FMath::RandRange(0, 100);
-	randPercent = FMath::Floor(randPercent) / 100.0f; // Set float precision to 2 decimal places
+	randPercent = FMath::Floor(randPercent);
 
 	if(randPercent <= (CommonPercentage - modifier))
 		return COMMON;
@@ -46,7 +43,7 @@ ERarities ULootTable::ChooseRarity(float modifier = 0.0f)
 	return COMMON;
 }
 
-ELootTypes ULootTable::ChooseItem(EEnemyTypes enemyType, float modifier = 0.0f)
+ELootTypes ULootTable::ChooseItemType(EEnemyTypes enemyType, float modifier = 0.0f)
 {
 	// Need to check if boss is dropping item, if so guarantee weapon drop
 
@@ -54,15 +51,20 @@ ELootTypes ULootTable::ChooseItem(EEnemyTypes enemyType, float modifier = 0.0f)
 	if (enemyType == GRUNT)
 	{
 		float randPercent = FMath::RandRange(0, 100);
-		randPercent = FMath::Floor(randPercent) / 100.0f; // Set float precision to 2 decimal places
+		randPercent = FMath::Floor(randPercent);
 
-		return WEAPON;
+		if(randPercent <= 50.0f - modifier)
+			return CURRENCY;
+		else if(randPercent <= 100.0f - modifier)
+			return ARMOR;
 	}
 	// Boss Loot Drops
 	else if (enemyType == BOSS)
 	{
 		float randPercent = FMath::RandRange(0, 100);
-		randPercent = FMath::Floor(randPercent) / 100.0f; // Set float precision to 2 decimal places
+		randPercent = FMath::Floor(randPercent);
+
+		return WEAPON;
 	}
 
 	return WEAPON;

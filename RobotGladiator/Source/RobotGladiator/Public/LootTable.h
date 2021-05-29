@@ -43,7 +43,9 @@ public:
 	ULootTable();
 
 	UFUNCTION(BlueprintCallable)
-	FString ChooseLoot();
+	ERarities ChooseRarity(float modifier);
+	UFUNCTION(BlueprintCallable)
+	ELootTypes ChooseItemType(EEnemyTypes enemyType, float modifier);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -61,9 +63,6 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	ERarities ChooseRarity(float modifier);
-	ELootTypes ChooseItem(EEnemyTypes enemyType, float modifier);
 
 public:	
 	// Called every frame
