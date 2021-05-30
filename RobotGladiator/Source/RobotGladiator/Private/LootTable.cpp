@@ -28,9 +28,11 @@ void ULootTable::BeginPlay()
 
 ERarities ULootTable::ChooseRarity(float modifier = 0.0f)
 {
+	// Get random number between 1 and 100
 	float randPercent = FMath::RandRange(0, 100);
 	randPercent = FMath::Floor(randPercent);
 
+	// Calculate rarities
 	if(randPercent <= (CommonPercentage - modifier))
 		return COMMON;
 	else if(randPercent <= (RarePercentage + CommonPercentage) - modifier)
