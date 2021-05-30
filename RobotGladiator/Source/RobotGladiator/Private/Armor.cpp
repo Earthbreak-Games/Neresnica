@@ -12,6 +12,13 @@ AArmor::AArmor()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Armor Mesh"));
 }
 
+void AArmor::SetArmorStats(int defense, ERarities rarity, EArmorTypes type)
+{
+	DefenseStat = defense;
+	Rarity = rarity;
+	ArmorType = type;
+}
+
 // Called when the game starts or when spawned
 void AArmor::BeginPlay()
 {

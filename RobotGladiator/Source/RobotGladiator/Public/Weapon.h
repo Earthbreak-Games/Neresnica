@@ -4,17 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "LootEnums.h"
 #include "Weapon.generated.h"
 
-UENUM(BlueprintType)
-enum EWeaponTypes
-{
-	SWORD		UMETA(DisplayName = "Sword"),
-	AXE			UMETA(DisplayName = "Axe"),
-	SHIELD		UMETA(DisplayName = "Shield"),
-	SPEAR		UMETA(DisplayName = "Spear"),
-	KNIVES		UMETA(DisplayName = "Knives")
-};
+
 
 UCLASS()
 class ROBOTGLADIATOR_API AWeapon : public AActor
@@ -24,6 +17,9 @@ class ROBOTGLADIATOR_API AWeapon : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponStats(int baseDamage, ERarities rarity, EWeaponTypes type);
 
 protected:
 	// Called when the game starts or when spawned
@@ -39,4 +35,10 @@ public:
 	UStaticMeshComponent* Mesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true"))
 	FName WeaponName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TEnumAsByte<ERarities> Rarity;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TEnumAsByte<EWeaponTypes> WeaponType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int BaseDamage;
 };

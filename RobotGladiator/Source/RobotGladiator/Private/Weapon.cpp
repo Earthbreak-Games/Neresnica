@@ -12,6 +12,13 @@ AWeapon::AWeapon()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon Mesh"));
 }
 
+void AWeapon::SetWeaponStats(int baseDamage, ERarities rarity, EWeaponTypes type)
+{
+	BaseDamage = baseDamage;
+	Rarity = rarity;
+	WeaponType = type;
+}
+
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {

@@ -6,31 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "Weapon.h"
 #include "Armor.h"
+#include "LootEnums.h"
 #include "LootTable.generated.h"
-
-UENUM(BlueprintType)
-enum ERarities
-{
-	COMMON		UMETA(DisplayName = "Common"),
-	RARE		UMETA(DisplayName = "Rare"),
-	LEGENDARY	UMETA(DisplayName = "Legendary"),
-	EPIC		UMETA(DisplayName = "Epic")
-};
-
-UENUM(BlueprintType)
-enum ELootTypes
-{
-	HEALTH		UMETA(DisplayName = "Health"),
-	WEAPON		UMETA(DisplayName = "Weapon"),
-	ARMOR		UMETA(DisplayName = "Armor")
-};
-
-UENUM(BlueprintType)
-enum EEnemyTypes
-{
-	GRUNT		UMETA(DisplayName = "Grunt"),
-	BOSS		UMETA(DisplayName = "Boss")
-};
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
