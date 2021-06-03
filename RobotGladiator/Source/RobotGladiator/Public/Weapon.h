@@ -5,9 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "LootEnums.h"
+#include "Components/WidgetComponent.h"
 #include "Weapon.generated.h"
-
-
 
 UCLASS()
 class ROBOTGLADIATOR_API AWeapon : public AActor
@@ -41,4 +40,7 @@ public:
 	TEnumAsByte<EWeaponTypes> WeaponType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int BaseDamage;
+
+protected:
+	
 };

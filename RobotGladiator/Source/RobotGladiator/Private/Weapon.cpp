@@ -2,6 +2,8 @@
 
 
 #include "Weapon.h"
+#include "UObject/ConstructorHelpers.h"
+#include "LootHUD.h"
 
 // Sets default values
 AWeapon::AWeapon()
