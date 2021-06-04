@@ -1,11 +1,17 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+/*
+* Weapon.cpp
+* Purpose: Defines the specific functionality of a weapon
+* Dependencies: None
+* Primary Author: Ethan Heil
+*/
 
 #include "Weapon.h"
-#include "UObject/ConstructorHelpers.h"
 #include "LootHUD.h"
 
-// Sets default values
+/*
+* AWeapon
+* Default Constructor for a weapon
+*/
 AWeapon::AWeapon()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -14,21 +20,34 @@ AWeapon::AWeapon()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon Mesh"));
 }
 
+/*
+* SetWeaponStats
+* Sets the stats for this weapon
+*	-Param baseDamage: base damage of the weapon
+*	-Param rarity: rarity of the weapon
+*	-Param type: the weapon type
+*/
 void AWeapon::SetWeaponStats(int baseDamage, ERarities rarity, EWeaponTypes type)
 {
+	// Set stats
 	BaseDamage = baseDamage;
 	Rarity = rarity;
 	WeaponType = type;
 }
 
-// Called when the game starts or when spawned
+/*
+* BeginPlay
+* Called at the start of a scene, used for initialization
+*/
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-// Called every frame
+/*
+* Tick
+* Called every frame
+*/
 void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

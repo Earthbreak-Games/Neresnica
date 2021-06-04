@@ -1,4 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+* Armor.h
+* Purpose: Declares the specific functionality of a piece of armor
+* Dependencies: LootEnums.h
+* Primary Author: Ethan Heil
+*/
 
 #pragma once
 
@@ -17,6 +22,7 @@ public:
 	// Sets default values for this actor's properties
 	AArmor();
 
+	// Sets the stats for this armor piece
 	UFUNCTION(BlueprintCallable)
 	void SetArmorStats(int defense, ERarities rarity, EArmorTypes type);
 

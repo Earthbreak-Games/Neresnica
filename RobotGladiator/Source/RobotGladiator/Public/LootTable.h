@@ -1,4 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+* LootTable.h
+* Purpose: Declares the specific functionality of a loot table
+* Dependencies: Weapon.h, Armor.h, LootEnums.h
+* Primary Author: Ethan Heil
+*/
 
 #pragma once
 
@@ -19,8 +24,10 @@ public:
 	// Sets default values for this component's properties
 	ULootTable();
 
+	// Choose rarity for an item
 	UFUNCTION(BlueprintCallable)
 	ERarities ChooseRarity(float modifier);
+	// Choose item type based on enemy
 	UFUNCTION(BlueprintCallable)
 	ELootTypes ChooseItemType(EEnemyTypes enemyType, float modifier);
 

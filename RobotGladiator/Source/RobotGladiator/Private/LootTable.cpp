@@ -1,9 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+/*
+* LootTable.h
+* Purpose: Defines the functionality of a loot table 
+* Dependencies: None
+* Primary Author: Ethan Heil
+*/
 
 #include "LootTable.h"
 
-// Sets default values for this component's properties
+/*
+* ULootTable
+* Default Constructor for the loot table
+*/
 ULootTable::ULootTable()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
@@ -16,19 +23,23 @@ ULootTable::ULootTable()
 	EpicPercentage = 10.0f;
 }
 
-// Called when the game starts
+/*
+* BeginPlay
+* Called at the start of a scene, used for initialization
+*/
 void ULootTable::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
-
+/*
+* ChooseRarity
+* Chooses a rarity for an item. Each rarity has a weighted percentage
+*	-Param modifier: decreases the chance of getting a lower tier rarity
+*/
 ERarities ULootTable::ChooseRarity(float modifier = 0.0f)
 {
-	// Get random number between 1 and 100
+	// Get random number between 0 and 100
 	float randPercent = FMath::RandRange(0, 100);
 	randPercent = FMath::Floor(randPercent);
 
@@ -45,16 +56,22 @@ ERarities ULootTable::ChooseRarity(float modifier = 0.0f)
 	return COMMON;
 }
 
+/*
+* ChooseItemType
+* Chooses an item type based on the type of enemy.
+*	-Param enemyType: the type of enemy
+*	-Param modifier: decreases the chance of getting a lower tier item
+*/
 ELootTypes ULootTable::ChooseItemType(EEnemyTypes enemyType, float modifier = 0.0f)
 {
-	// Need to check if boss is dropping item, if so guarantee weapon drop
-
 	// Grunt loot drops
 	if (enemyType == GRUNT)
 	{
+		// Get random number between 0 and 100
 		float randPercent = FMath::RandRange(0, 100);
 		randPercent = FMath::Floor(randPercent);
 
+		// Choose item
 		if(randPercent <= 70.0f - modifier)
 			return HEALTH;
 		else if(randPercent <= 100.0f - modifier)
@@ -63,20 +80,18 @@ ELootTypes ULootTable::ChooseItemType(EEnemyTypes enemyType, float modifier = 0.
 	// Boss Loot Drops
 	else if (enemyType == BOSS)
 	{
-		float randPercent = FMath::RandRange(0, 100);
-		randPercent = FMath::Floor(randPercent);
-
 		return WEAPON;
 	}
 
 	return WEAPON;
 }
 
-// Called every frame
+/*
+* TickComponent
+* Called every frame
+*/
 void ULootTable::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 

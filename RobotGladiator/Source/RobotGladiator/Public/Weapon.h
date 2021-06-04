@@ -1,11 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+* Weapon.h
+* Purpose: Declares the specific functionality of a weapon
+* Dependencies: LootEnums.h
+* Primary Author: Ethan Heil
+*/
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "LootEnums.h"
-#include "Components/WidgetComponent.h"
 #include "Weapon.generated.h"
 
 UCLASS()
@@ -17,6 +21,7 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
+	// Set the stats for this weapon
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponStats(int baseDamage, ERarities rarity, EWeaponTypes type);
 

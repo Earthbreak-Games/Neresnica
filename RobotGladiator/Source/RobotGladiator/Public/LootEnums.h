@@ -1,4 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+* LootEnums.h
+* Purpose: Declares all enums that deal with loot and rarities
+* Dependencies: None
+* Primary Author: Ethan Heil
+*/
 
 #pragma once
 
