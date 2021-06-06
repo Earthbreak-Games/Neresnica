@@ -41,6 +41,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndRound();
 
+	UFUNCTION(BlueprintCallable)
+	void SetupLobbyOrientation(int numTiles);
+
 public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AActor> FloorPieceActor;
