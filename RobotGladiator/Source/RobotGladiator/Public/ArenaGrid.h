@@ -12,6 +12,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "HexCell.h"
 #include "ArenaGrid.generated.h"
+#include "../../../Plugins/SimplexNoise/Source/SimplexNoise/Public/SimplexNoiseBPLibrary.h"
 
 UCLASS()
 class ROBOTGLADIATOR_API AArenaGrid : public AActor
