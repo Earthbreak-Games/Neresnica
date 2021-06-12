@@ -3,10 +3,11 @@
 
 #include "GladiatorBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/OutputDevice.h"
 
 AGladiatorBase::AGladiatorBase()
 {
-
+	SetActorTickEnabled(true);
 }
 
 void AGladiatorBase::BeginPlay()
@@ -15,10 +16,9 @@ void AGladiatorBase::BeginPlay()
 
 	if (mpTarget == nullptr)
 	{
-		TSubclassOf<ARobotGladiatorCharacter> classtoFind;
 
 		TArray<AActor*> foundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), classtoFind, foundActors);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
 
 		mpTarget = GetClosestPlayer(foundActors);
 
@@ -28,10 +28,16 @@ void AGladiatorBase::BeginPlay()
 
 AActor* AGladiatorBase::GetClosestPlayer(TArray<AActor*> Array)
 {
-	AActor* closestPlayer;
-	float distance = 99999999999.0; //replace with max float
+	AActor* closestPlayer = nullptr;
+	float distance = INT_MAX;
 
+	//log all actors found for debugging
+	for (AActor* actor : Array)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Names: %s"), *actor->GetName());
+	}
 
+	//find the closes actor
 	for (AActor* actor : Array)
 	{
 		if (actor != this)
@@ -56,4 +62,54 @@ AActor* AGladiatorBase::GetClosestPlayer(TArray<AActor*> Array)
 	}
 
 	return closestPlayer;
+}
+
+void AGladiatorBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	TArray<AActor*> foundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
+	AActor* target = GetClosestPlayer(foundActors);
+
+	if (mpTarget == nullptr || (mpTarget != nullptr && target != mpTarget))
+	{
+		mpTarget = target;
+	}
+
+
+	FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
+	mDistanceToTarget = dir.Size();
+	
+	if ( !mIsOnCooldown && !mIsAttacking)
+	{
+	
+
+		if (mDistanceToTarget <= mMeleeRange) 
+		{
+			MeleeAttack();
+			mTimeLeftOnCoolDown = mMeleeCoolDown;
+		}
+		else
+		{
+			RangedAttack();
+			mTimeLeftOnCoolDown = mRangedCoolDownTime;
+
+		}
+
+		
+		//mIsOnCooldown = true;
+	}
+	else if (mIsOnCooldown)
+	{
+		mTimeLeftOnCoolDown -= DeltaTime;
+		if (mTimeLeftOnCoolDown <= 0)
+		{
+			mTimeLeftOnCoolDown = 0;
+			mIsOnCooldown = false;
+		}
+	}
+
+
+	UE_LOG(LogTemp, Warning, TEXT("Cooldown: %s"), *(FString::SanitizeFloat(mTimeLeftOnCoolDown)));
 }
