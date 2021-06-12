@@ -174,7 +174,9 @@ void AArenaGrid::CalculateTilePositions()
 	for (int i = 0; i < FloorPieces.Num(); i++)
 	{
 		float height = FMath::RandRange(MinHeight, MaxHeight);
-		FloorHeights.Add(height);
+		//float height = SimplexNoiseInRange2D(i, i, MinHeight, MaxHeight);
+		//float height = 1.0;//SimplexNoise2D(i, i);
+ 		FloorHeights.Add(height);
 	}
 }
 /*
