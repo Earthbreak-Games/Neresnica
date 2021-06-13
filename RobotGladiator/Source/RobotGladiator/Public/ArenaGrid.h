@@ -11,6 +11,7 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "HexCell.h"
+#include "Math/UnrealMathUtility.h"
 #include "ArenaGrid.generated.h"
 
 UCLASS()

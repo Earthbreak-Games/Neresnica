@@ -166,16 +166,16 @@ void AArenaGrid::BeginPlay()
 */
 void AArenaGrid::CalculateTilePositions()
 {
-	// **** This code is TEMPORARY, will switch to simplex noise once Henry implements it ****
-
 	// Clear previous heights
 	FloorHeights.Empty();
 
 	for (int i = 0; i < FloorPieces.Num(); i++)
 	{
-		float height = FMath::RandRange(MinHeight, MaxHeight);
-		//float height = SimplexNoiseInRange2D(i, i, MinHeight, MaxHeight);
-		//float height = 1.0;//SimplexNoise2D(i, i);
+		// Generates a float from 2D Perlin noise  
+		float height = FMath::PerlinNoise2D(FVector2D(FloorPieces[i]->GetActorLocation().X, FloorPieces[i]->GetActorLocation().X));
+		height += MinHeight + 1;
+		height *= (MaxHeight - MinHeight);
+
  		FloorHeights.Add(height);
 	}
 }
