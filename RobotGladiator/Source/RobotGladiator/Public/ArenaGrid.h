@@ -14,11 +14,20 @@
 #include "Math/UnrealMathUtility.h"
 #include "ArenaGrid.generated.h"
 
+USTRUCT(BlueprintType)
+struct FSaveState
+{
+	GENERATED_BODY()
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<float> Heights;
+};
+
 UCLASS()
 class ROBOTGLADIATOR_API AArenaGrid : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:	
 	// Sets default values for this actor's properties
 	AArenaGrid();
@@ -50,6 +59,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<float> FloorHeights;
 	TArray<HexCell> Cells;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<FSaveState> SavedStates;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Radius;

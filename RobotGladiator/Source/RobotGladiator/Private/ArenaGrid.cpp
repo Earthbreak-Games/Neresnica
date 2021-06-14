@@ -172,9 +172,11 @@ void AArenaGrid::CalculateTilePositions()
 	for (int i = 0; i < FloorPieces.Num(); i++)
 	{
 		// Generates a float from 2D Perlin noise  
-		float height = FMath::PerlinNoise2D(FVector2D(FloorPieces[i]->GetActorLocation().X, FloorPieces[i]->GetActorLocation().X));
-		height += MinHeight + 1;
-		height *= (MaxHeight - MinHeight);
+		float height = FMath::PerlinNoise2D(FVector2D(FloorPieces[i]->GetActorLocation().X, FloorPieces[i]->GetActorLocation().Y));
+		//height += MinHeight + 1;
+		//height *= (MaxHeight - MinHeight);
+
+		height *= 650.0f;
 
  		FloorHeights.Add(height);
 	}
