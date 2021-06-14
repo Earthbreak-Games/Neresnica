@@ -62,7 +62,7 @@ public:
 
 	// Save the current hex grid state to the saved state array at the specified index
 	UFUNCTION(BlueprintCallable)
-	void SaveState(int index = -1);
+	int SaveState(int index = -1);
 
 	// Generate new tile heights from in the editor
 	UFUNCTION(BlueprintCallable)
@@ -71,6 +71,9 @@ public:
 	// Remove the stored height at the given index
 	UFUNCTION(BlueprintCallable)
 	void EraseHeightState(int index);
+
+	UFUNCTION(BlueprintCallable)
+	void LoadSaveState(int index, FVector origin, int radius, float padding);
 
 public:
 	UPROPERTY(EditAnywhere)

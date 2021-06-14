@@ -159,19 +159,23 @@ void AArenaGrid::EndRound()
 * Save the current hex grid state to the saved state array at the specified index.
 * If no index is given will append to the end of the array
 *	-Param index (default -1): The index to save at. Default or invalid appends
+*	-Return result: The index at which the new save state was stored
 */
-void AArenaGrid::SaveState(int index)
+int AArenaGrid::SaveState(int index)
 {
 	FSaveState tmp = FSaveState(FloorHeights);
+	int result = 0;
 
 	if (SavedStates.IsValidIndex(index))
 	{
-		SavedStates.Insert(tmp, index);
+		result = SavedStates.Insert(tmp, index);
 	}
 	if (index == -1)
 	{
-		SavedStates.Add(tmp);
+		result = SavedStates.Add(tmp);
 	}
+
+	return result;
 }
 
 /*
@@ -186,6 +190,78 @@ void AArenaGrid::GenerateHeights()
 void AArenaGrid::EraseHeightState(int index)
 {
 	SavedStates.Empty();
+}
+
+void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padding)
+{
+	if (SavedStates.IsValidIndex(index))
+	{
+		// Set heights from saved state
+		FloorHeights.Empty();
+		FloorHeights = SavedStates[index].mHeights;
+
+		// Initialize hex grid data
+		InitHexGrid(radius);
+
+		HexCell center = HexCell(0.0f, 0.0f, 0.0f);
+
+		// Loop through all initialized cells
+		for (int i = 0; i < Cells.Num(); i++)
+		{
+			// Init spawn parameters
+			FActorSpawnParameters spawnParams;
+			spawnParams.Owner = this;
+			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			// Set spawn location
+			FVector spawnLoc = origin;
+
+			// Check if actor to spawn is valid
+			if (FloorPieceActor)
+			{
+				// Get current cell
+				HexCell currentCell = CubeToAxial(Cells[i]);
+				currentCell.SetID(i);
+
+				// Calculate tile offset. See https://www.redblobgames.com/grids/hexagons/ (Hex to pixel section) for more info on coordinate conversion
+				float xPos = padding * (FMath::Sqrt(3) * currentCell.GetQ() + FMath::Sqrt(3) / 2 * currentCell.GetR());
+				float yPos = padding * (3.0f / 2.0f * currentCell.GetR());
+
+				FVector tileOffset;
+				if (currentCell.GetQ() == 0 && currentCell.GetR() == 0)
+				{
+					tileOffset = FVector(xPos, yPos, MaxHeight);
+					center = currentCell;
+				}
+				else
+				{
+					// Set the height from the stored data in the tile offset
+					tileOffset = FVector(xPos, yPos, FloorHeights[i]) * padding;
+				}
+
+				// Spawn new tile
+				FRotator rot = this->GetActorRotation();
+				AActor* floorPiece = GetWorld()->SpawnActor<AActor>(FloorPieceActor, spawnLoc + tileOffset, rot, spawnParams);
+
+				// Child new floor piece to the grid object
+				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+				floorPiece->AttachToActor(this, attachRules);
+
+				// Set the correct rotation of the floor piece
+				rot = FRotator(0.0f, 30.0f, 0.0f);
+				floorPiece->AddActorLocalRotation(rot);
+
+				// Add the floor piece to floor piece array
+				FloorPieces.Add(floorPiece);
+			}
+		}
+
+		CalculateRing(center, radius);
+	}
+	else
+	{
+		SpawnFloor(origin, radius, padding);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -207,8 +283,8 @@ void AArenaGrid::CalculateTilePositions()
 	{
 		// Generates a float from 2D Perlin noise  
 		float height = FMath::PerlinNoise2D(FVector2D(FloorPieces[i]->GetActorLocation().X, FloorPieces[i]->GetActorLocation().Y));
-		//height += MinHeight + 1;
-		//height *= (MaxHeight - MinHeight);
+		height += MinHeight + 1;
+		height *= (MaxHeight - MinHeight);
 
 		height *= 650.0f;
 
