@@ -19,8 +19,17 @@ struct FSaveState
 {
 	GENERATED_BODY()
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TArray<float> Heights;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> mHeights;
+
+	FSaveState(TArray<float> in) : mHeights(in)
+	{
+	}
+
+	FSaveState()
+	{
+		mHeights.AddZeroed();
+	}
 };
 
 UCLASS()
@@ -50,6 +59,18 @@ public:
 	// Activate ending sequence for the current round
 	UFUNCTION(BlueprintCallable)
 	void EndRound();
+
+	// Save the current hex grid state to the saved state array at the specified index
+	UFUNCTION(BlueprintCallable)
+	void SaveState(int index = -1);
+
+	// Generate new tile heights from in the editor
+	UFUNCTION(BlueprintCallable)
+	void GenerateHeights();
+
+	// Remove the stored height at the given index
+	UFUNCTION(BlueprintCallable)
+	void EraseHeightState(int index);
 
 public:
 	UPROPERTY(EditAnywhere)

@@ -154,6 +154,40 @@ void AArenaGrid::EndRound()
 	FloorHeights.Empty();
 }
 
+/*
+* SaveState
+* Save the current hex grid state to the saved state array at the specified index.
+* If no index is given will append to the end of the array
+*	-Param index (default -1): The index to save at. Default or invalid appends
+*/
+void AArenaGrid::SaveState(int index)
+{
+	FSaveState tmp = FSaveState(FloorHeights);
+
+	if (SavedStates.IsValidIndex(index))
+	{
+		SavedStates.Insert(tmp, index);
+	}
+	if (index == -1)
+	{
+		SavedStates.Add(tmp);
+	}
+}
+
+/*
+* Generate Heights
+* Calls the calculate tile positions protected function in order to randomize heights
+*/
+void AArenaGrid::GenerateHeights()
+{
+	CalculateTilePositions();
+}
+
+void AArenaGrid::EraseHeightState(int index)
+{
+	SavedStates.Empty();
+}
+
 // Called when the game starts or when spawned
 void AArenaGrid::BeginPlay()
 {
