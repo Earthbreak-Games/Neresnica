@@ -126,19 +126,31 @@ void AArenaGrid::InitHexGrid(int radius)
 
 }
 
+/*
+* StartRound
+* Activates the starting sequence for the current round
+*/
 void AArenaGrid::StartRound()
 {
 	CalculateTilePositions();
 }
 
+/*
+* EndRound
+* Activates the ending sequence for the current round
+*/
 void AArenaGrid::EndRound()
 {
+	// Reset the center tile to it's max height
 	FloorPieces[0]->SetActorLocation(FVector(FloorPieces[0]->GetActorLocation().X, FloorPieces[0]->GetActorLocation().Y, MaxHeight));
+
+	// Reset all other tiles to the min height
 	for (int i = 1; i < FloorPieces.Num(); i++)
 	{
 		FloorPieces[i]->SetActorLocation(FVector(FloorPieces[i]->GetActorLocation().X, FloorPieces[i]->GetActorLocation().Y, MinHeight));
 	}
 
+	// Clear floor heights
 	FloorHeights.Empty();
 }
 
@@ -148,10 +160,15 @@ void AArenaGrid::BeginPlay()
 	Super::BeginPlay();
 }
 
+/*
+* CalculateTilePositions
+* Calculates the position of each tile using simplex noise
+*/
 void AArenaGrid::CalculateTilePositions()
 {
 	// **** This code is TEMPORARY, will switch to simplex noise once Henry implements it ****
 
+	// Clear previous heights
 	FloorHeights.Empty();
 
 	for (int i = 0; i < FloorPieces.Num(); i++)
@@ -160,15 +177,23 @@ void AArenaGrid::CalculateTilePositions()
 		FloorHeights.Add(height);
 	}
 }
-
+/*
+* Calculate Ring
+* Calculates a ring around a tile with a given radius
+*	-Param center: the center tile of the ring
+*	-Param radius: the radius of the ring (in tiles)
+* See https://www.redblobgames.com/grids/hexagons/ (Rings Section) for more info
+*/
 void AArenaGrid::CalculateRing(HexCell center, int radius)
 {	
+	// Calculate the location of the first cell in the ring
 	HexCell currentCell = AddHex(center, MultiplyHex(GetHexDirection(4), radius));
 
 	for (int i = 0; i < 6; i++)
 	{
 		for (int j = 0; j < radius; j++)
 		{
+			// Get the neighbor of this cell
 			Cells.Add(currentCell);
 			currentCell = GetNeighbor(currentCell, i);
 		}

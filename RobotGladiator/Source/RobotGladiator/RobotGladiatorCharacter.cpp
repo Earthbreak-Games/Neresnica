@@ -1,4 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+/*
+* RobotGladiatorCharacter.cpp
+* Purpose: Defines the specific functionality of our player
+* Dependencies: See includes
+* Primary Author: Ethan Heil
+*/
 
 #include "RobotGladiatorCharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
@@ -9,9 +15,10 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 
-//////////////////////////////////////////////////////////////////////////
-// ARobotGladiatorCharacter
-
+/*
+* ARobotGladiatorCharacter
+* Default Constructor for the player character
+*/
 ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 {
 	// Set size for collision capsule
@@ -31,6 +38,9 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
+	BaseSpeed = 600.0f;
+	LockOnSpeed = 400.0f;
+	SprintMultiplier = 1.5f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -49,104 +59,152 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
-
+/*
+* SetupPlayerInputComponent
+* Set up and bind player inputs
+*	- Param PlayerInputComponent: The input component for this character
+*/
 void ARobotGladiatorCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
+
+	// Set up action bindings
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ARobotGladiatorCharacter::Sprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ARobotGladiatorCharacter::EndSprint);
 
+
+	// Set up movement bindings
 	PlayerInputComponent->BindAxis("MoveForward", this, &ARobotGladiatorCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ARobotGladiatorCharacter::MoveRight);
-
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
+	
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &ARobotGladiatorCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	
+	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
+	PlayerInputComponent->BindAxis("TurnRate", this, &ARobotGladiatorCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ARobotGladiatorCharacter::LookUpAtRate);
-
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &ARobotGladiatorCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &ARobotGladiatorCharacter::TouchStopped);
-
-	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ARobotGladiatorCharacter::OnResetVR);
 }
 
-
-void ARobotGladiatorCharacter::OnResetVR()
+/*
+* BeginPlay
+* Called at the start of a scene, used for initialization
+*/
+void ARobotGladiatorCharacter::BeginPlay()
 {
-	// If RobotGladiator is added to a project via 'Add Feature' in the Unreal Editor the dependency on HeadMountedDisplay in RobotGladiator.Build.cs is not automatically propagated
-	// and a linker error will result.
-	// You will need to either:
-	//		Add "HeadMountedDisplay" to [YourProject].Build.cs PublicDependencyModuleNames in order to build successfully (appropriate if supporting VR).
-	// or:
-	//		Comment or delete the call to ResetOrientationAndPosition below (appropriate if not supporting VR)
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
+	Super::BeginPlay();
+
+	// Set base walk speed
+	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
 }
 
-void ARobotGladiatorCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-		Jump();
-}
-
-void ARobotGladiatorCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-		StopJumping();
-}
-
+/*
+* TurnAtRate
+* Called via input to turn at a given rate, used for analog input (i.e. a joystick).
+*	-Param Rate: This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
+*/
 void ARobotGladiatorCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
+/*
+* LookUpAtRate
+* Called via input to turn look up/down at a given rate, used for analog input (i.e. a joystick).
+*	-Param Rate: This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
+*/
 void ARobotGladiatorCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+/*
+* Sprint
+* Switches the character from running to sprinting
+*/
+void ARobotGladiatorCharacter::Sprint()
+{
+	// Check if locked on to enemy
+	if (!IsLockedOnEnemy)
+	{
+		// Enable sprinting
+		IsSprinting = true;
+		GetCharacterMovement()->MaxWalkSpeed = BaseSpeed * SprintMultiplier;
+	}
+}
+
+/*
+* EndSprint
+* Switches the character from sprinting to running
+*/
+void ARobotGladiatorCharacter::EndSprint()
+{
+	// Disable sprinting and reset movement speed
+	IsSprinting = false;
+	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
+}
+
+/*
+* MoveForward
+* Moves the player forward/backwards based on input value
+*	Param Value: Normalized (0-1) input value from the player
+*/
 void ARobotGladiatorCharacter::MoveForward(float Value)
 {
+	// Validate player controller
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		FRotator Rotation;
 		// find out which way is forward
 		if (IsLockedOnEnemy)
 		{
+			// Use follow camera rotation
 			Rotation = FollowCamera->GetComponentRotation();
+			// Adjust player speed
+			GetCharacterMovement()->MaxWalkSpeed = LockOnSpeed;
 		}
 		else
 		{
+			// Use controller rotation
 			Rotation = Controller->GetControlRotation();
 		}
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
 }
 
+/*
+* MoveRight
+* Moves the player right/left based on input value
+*	Param Value: Normalized (0-1) input value from the player
+*/
 void ARobotGladiatorCharacter::MoveRight(float Value)
 {
+	// Validate player controller
 	if ( (Controller != nullptr) && (Value != 0.0f) )
 	{
-		// find out which way is right
 		FRotator Rotation;
 
+		// find out which way is right
 		if (IsLockedOnEnemy)
 		{
+			// Use follow camera rotation
 			Rotation = FollowCamera->GetComponentRotation();
+			// Adjust player speed
+			GetCharacterMovement()->MaxWalkSpeed = LockOnSpeed;
 		}
 		else
 		{
+			// Use controller rotation
 			Rotation = Controller->GetControlRotation();
 		}
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
