@@ -236,7 +236,8 @@ void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padd
 				else
 				{
 					// Set the height from the stored data in the tile offset
-					tileOffset = FVector(xPos, yPos, FloorHeights[i]) * padding;
+					tileOffset = FVector(xPos, yPos, GetTransform().GetLocation().Z) * padding;
+					tileOffset.Z += FloorHeights[i];
 				}
 
 				// Spawn new tile
@@ -285,8 +286,7 @@ void AArenaGrid::CalculateTilePositions()
 		float height = FMath::PerlinNoise2D(FVector2D(FloorPieces[i]->GetActorLocation().X, FloorPieces[i]->GetActorLocation().Y));
 		height += MinHeight + 1;
 		height *= (MaxHeight - MinHeight);
-
-		height *= 650.0f;
+		//height = FMath::Clamp(height, MinHeight, MaxHeight);
 
  		FloorHeights.Add(height);
 	}
