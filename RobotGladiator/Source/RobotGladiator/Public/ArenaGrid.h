@@ -115,4 +115,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+private:
+	// A random stream to seed the perlin noise sample
+	FRandomStream mRand;
 };

@@ -19,6 +19,10 @@ AArenaGrid::AArenaGrid()
 	Padding = 1.0f;
 	MinHeight = 0.0f;
 	MaxHeight = 1500.0f;
+
+	// Seed the random stream
+	mRand = FRandomStream();
+	mRand.GenerateNewSeed();
 }
 
 /*
@@ -314,11 +318,15 @@ void AArenaGrid::CalculateTilePositions(float scale)
 	// Clear previous heights
 	FloorHeights.Empty();
 
+	// A time-based pseudo-random seed for the noise sample
+	float seed = mRand.FRand();
+
 	// Generate a new height for each hex cell
 	for (int i = 0; i < FloorPieces.Num(); i++)
 	{
 		// Generates a float from 2D Perlin noise using the world location of the hex cells as input
-		float height = FMath::PerlinNoise2D(FVector2D(scale*FloorPieces[i]->GetActorLocation().X, scale*FloorPieces[i]->GetActorLocation().Y));
+		float height = FMath::PerlinNoise2D(FVector2D(seed * scale * FloorPieces[i]->GetActorLocation().X,
+													  seed * scale * FloorPieces[i]->GetActorLocation().Y));
 
 		// Translate the height from a [-1,1] scale to a [0,2] scale
 		height += 1.0f;
