@@ -3,6 +3,7 @@
 * Purpose: Defines functionality of the Arena Grid class which is responsible for generating and managing a hexagonal grid
 * Dependencies: ArenaGrid.h, HexCell.h
 * Primary Author: Ethan Heil
+*	State Saving/Editing Additions: Henry Chronowski
 */
 
 #include "ArenaGrid.h"
@@ -159,13 +160,15 @@ void AArenaGrid::EndRound()
 * Save the current hex grid state to the saved state array at the specified index.
 * If no index is given will append to the end of the array
 *	-Param index (default -1): The index to save at. Default or invalid appends
+*	-Param freshState: This governs whether current editor data is saved or ignored
 *	-Return result: The index at which the new save state was stored
 */
 int AArenaGrid::SaveState(int index, bool freshState)
 {
-	FSaveState tmp;// = FSaveState(FloorHeights);
+	FSaveState tmp;
 	int i, result = 0;
 
+	// If saving current editor data update the stored data with the data from actors in the editor
 	if (!freshState)
 		for (i = 0; i < FloorPieces.Num(); ++i)
 		{
