@@ -161,10 +161,19 @@ void AArenaGrid::EndRound()
 *	-Param index (default -1): The index to save at. Default or invalid appends
 *	-Return result: The index at which the new save state was stored
 */
-int AArenaGrid::SaveState(int index)
+int AArenaGrid::SaveState(int index, bool freshState)
 {
-	FSaveState tmp = FSaveState(FloorHeights);
-	int result = 0;
+	FSaveState tmp;// = FSaveState(FloorHeights);
+	int i, result = 0;
+
+	if (!freshState)
+		for (i = 0; i < FloorPieces.Num(); ++i)
+		{
+			if (FloorPieces[i])
+				FloorHeights[i] = FloorPieces[i]->GetActorLocation().Z;
+		}
+
+	tmp = FSaveState(FloorHeights);
 
 	if (SavedStates.IsValidIndex(index))
 	{

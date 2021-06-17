@@ -62,7 +62,7 @@ public:
 
 	// Save the current hex grid state to the saved state array at the specified index
 	UFUNCTION(BlueprintCallable)
-	int SaveState(int index = -1);
+	int SaveState(int index = -1, bool freshState = true);
 
 	// Generate new tile heights from in the editor
 	UFUNCTION(BlueprintCallable)
