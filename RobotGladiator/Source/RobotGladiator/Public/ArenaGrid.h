@@ -21,9 +21,12 @@ struct FSaveState
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> mHeights;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString mName;
 
 	FSaveState(TArray<float> in) : mHeights(in)
 	{
+		mName = "";
 	}
 
 	FSaveState()

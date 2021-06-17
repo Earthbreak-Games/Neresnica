@@ -177,7 +177,8 @@ int AArenaGrid::SaveState(int index, bool freshState)
 
 	if (SavedStates.IsValidIndex(index))
 	{
-		result = SavedStates.Insert(tmp, index);
+		//result = SavedStates.Insert(tmp, index);
+		SavedStates[index] = tmp;
 	}
 	if (index == -1)
 	{
@@ -198,7 +199,11 @@ void AArenaGrid::GenerateHeights()
 
 void AArenaGrid::EraseHeightState(int index)
 {
-	SavedStates.Empty();
+	//SavedStates.Empty();
+	if (SavedStates.IsValidIndex(index))
+	{
+		SavedStates.RemoveAt(index);
+	}
 }
 
 void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padding)
