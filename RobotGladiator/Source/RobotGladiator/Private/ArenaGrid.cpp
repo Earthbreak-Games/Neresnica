@@ -176,18 +176,20 @@ int AArenaGrid::SaveState(int index, bool freshState)
 				FloorHeights[i] = FloorPieces[i]->GetActorLocation().Z;
 		}
 
+	// Store the current float floor heights as a save state
 	tmp = FSaveState(FloorHeights);
 
+	// If the index is of a pre-existing save overwrite that save, otherwise create a new one
 	if (SavedStates.IsValidIndex(index))
 	{
-		//result = SavedStates.Insert(tmp, index);
 		SavedStates[index] = tmp;
 	}
-	if (index == -1)
+	else if (index == -1)
 	{
 		result = SavedStates.Add(tmp);
 	}
 
+	// Return the index of the state that was just stored
 	return result;
 }
 
@@ -195,20 +197,34 @@ int AArenaGrid::SaveState(int index, bool freshState)
 * Generate Heights
 * Calls the calculate tile positions protected function in order to randomize heights
 */
-void AArenaGrid::GenerateHeights()
+void AArenaGrid::GenerateHeights(float scale)
 {
-	CalculateTilePositions();
+	CalculateTilePositions(scale);
 }
 
+/*
+* EraseHeightState
+* Erases the save state stored at the given index
+*	-Param index: The index of the saved state to erase
+*/
 void AArenaGrid::EraseHeightState(int index)
 {
-	//SavedStates.Empty();
 	if (SavedStates.IsValidIndex(index))
 	{
 		SavedStates.RemoveAt(index);
 	}
 }
 
+/*
+* LoadSaveState
+* Loads the save state stored at the given index. If there is an invalid index loads the 
+*	default arena map.
+* This is effectively SpawnFloor but with stored level data rather than defaults
+*	-Param index: The index of the save state to load
+*	- Param origin: origin point of the grid (aka the center of the grid)
+*	- Param radius: the radius of the grid
+*	- Param padding the amount of padding between each cell in the grid
+*/
 void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padding)
 {
 	if (SavedStates.IsValidIndex(index))
@@ -276,6 +292,7 @@ void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padd
 
 		CalculateRing(center, radius);
 	}
+	// If an invalid index is entered generate the default arena
 	else
 	{
 		SpawnFloor(origin, radius, padding);
@@ -292,19 +309,27 @@ void AArenaGrid::BeginPlay()
 * CalculateTilePositions
 * Calculates the position of each tile using simplex noise
 */
-void AArenaGrid::CalculateTilePositions()
+void AArenaGrid::CalculateTilePositions(float scale)
 {
 	// Clear previous heights
 	FloorHeights.Empty();
 
+	// Generate a new height for each hex cell
 	for (int i = 0; i < FloorPieces.Num(); i++)
 	{
-		// Generates a float from 2D Perlin noise  
-		float height = FMath::PerlinNoise2D(FVector2D(FloorPieces[i]->GetActorLocation().X, FloorPieces[i]->GetActorLocation().Y));
-		height += MinHeight + 1;
-		height *= (MaxHeight - MinHeight);
-		//height = FMath::Clamp(height, MinHeight, MaxHeight);
+		// Generates a float from 2D Perlin noise using the world location of the hex cells as input
+		float height = FMath::PerlinNoise2D(FVector2D(scale*FloorPieces[i]->GetActorLocation().X, scale*FloorPieces[i]->GetActorLocation().Y));
 
+		// Translate the height from a [-1,1] scale to a [0,2] scale
+		height += 1.0f;
+
+		// Scale the height to a [0,1] and then further scale to a [0,Range] 
+		height *= 0.5 * (MaxHeight - MinHeight);
+
+		// Translate the height to a [MinHeight,MaxHeight] scale
+		height += MinHeight;
+
+		// Add the new height to the array
  		FloorHeights.Add(height);
 	}
 }

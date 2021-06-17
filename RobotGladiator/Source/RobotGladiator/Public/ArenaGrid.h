@@ -3,6 +3,7 @@
 * Purpose: Declares the Arena Grid class which is responsible for generating and managing a hexagonal grid
 * Dependencies: HexCell.h
 * Primary Author: Ethan Heil
+*	State Saving/Editing Additions: Henry Chronowski
 */
 
 #pragma once
@@ -29,9 +30,11 @@ struct FSaveState
 		mName = "";
 	}
 
+	// Sets default values for this actor's properties
 	FSaveState()
 	{
 		mHeights.AddZeroed();
+		mName = "";
 	}
 };
 
@@ -69,12 +72,13 @@ public:
 
 	// Generate new tile heights from in the editor
 	UFUNCTION(BlueprintCallable)
-	void GenerateHeights();
+	void GenerateHeights(float scale = 1.0f);
 
 	// Remove the stored height at the given index
 	UFUNCTION(BlueprintCallable)
 	void EraseHeightState(int index);
 
+	// Loads the saved state at the given index
 	UFUNCTION(BlueprintCallable)
 	void LoadSaveState(int index, FVector origin, int radius, float padding);
 
@@ -103,7 +107,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	// Calculate new tile position using Simplex Noise
-	void CalculateTilePositions();
+	void CalculateTilePositions(float scale = 1.0f);
 
 	void CalculateRing(HexCell center, int radius);
 
