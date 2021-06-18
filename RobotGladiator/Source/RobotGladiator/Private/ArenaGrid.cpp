@@ -1,10 +1,13 @@
-/*
-* ArenaGrid.cpp
-* Purpose: Defines functionality of the Arena Grid class which is responsible for generating and managing a hexagonal grid
-* Dependencies: ArenaGrid.h, HexCell.h
-* Primary Author: Ethan Heil
-*	State Saving/Editing Additions: Henry Chronowski
-*/
+/**
+ * @file ArenaGrid.cpp
+ * @brief Defines functionality of the Arena Grid class which is responsible for generating and managing a hexagonal grid
+ * @dependencies UnrealMathUtility.h, KismetMathLibrary.h, CoreMinimal.h, ArenaGrid.h, HexCell.h
+ *
+ * @author Ethan Heil
+ * @author Henry Chronowski - State Saving/Editing
+ * @credits 
+ *	https://www.redblobgames.com/grids/hexagons/
+ **/
 
 #include "ArenaGrid.h"
 
@@ -25,13 +28,11 @@ AArenaGrid::AArenaGrid()
 	mRand.GenerateNewSeed();
 }
 
-/*
-* Spawn Floor
-* Spawns a hexagonal grid in the world at a given point
-*	- Param origin: origin point of the grid (aka the center of the grid)
-*	- Param radius: the radius of the grid
-*	- Param padding the amount of padding between each cell in the grid
-*/
+/** @brief Spawns a hexagonal grid in the world at a given point
+ *  @param {FVector} origin - Origin point of the grid (aka the center of the grid)
+ *  @param {int} radius - The radius of the grid
+ *  @param {float} padding - The amount of padding between each cell in the grid
+ */
 void AArenaGrid::SpawnFloor(FVector origin, int radius, float padding)
 {
 	// Initialize hex grid data
@@ -90,10 +91,8 @@ void AArenaGrid::SpawnFloor(FVector origin, int radius, float padding)
 	CalculateRing(center, radius);
 }
 
-/*
-* Clear Floor
-* Clears the currently generated grid from the scene and resets all grid data
-*/
+/** @brief Clears the currently generated grid from the scene and resets all grid data
+ */
 void AArenaGrid::ClearFloor()
 {
 	// Loop through all floor pieces and destroy them
@@ -112,13 +111,12 @@ void AArenaGrid::ClearFloor()
 	Cells.Empty();
 }
 
-/*
-* InitHexGrid
-* Initializes the hex grid's data
-*	- Param radius: the radius of the hex grid
-* See https://www.redblobgames.com/grids/hexagons/ (Rings Section) for more info 
-* on grid generation algorithms
-*/
+/** @brief Initializes the hex grid's data
+ *  @param {int} radius - The radius of the hex grid
+ *  @param {int} radius - The radius of the grid
+ *  @references See https://www.redblobgames.com/grids/hexagons/ (Rings Section) for more info 
+ *		on grid generation algorithms
+ */
 void AArenaGrid::InitHexGrid(int radius)
 {
 	// Create center tile
@@ -131,19 +129,15 @@ void AArenaGrid::InitHexGrid(int radius)
 
 }
 
-/*
-* StartRound
-* Activates the starting sequence for the current round
-*/
+/** @brief Activates the starting sequence for the current round
+ */
 void AArenaGrid::StartRound()
 {
 	CalculateTilePositions();
 }
 
-/*
-* EndRound
-* Activates the ending sequence for the current round
-*/
+/** @brief Activates the ending sequence for the current round
+ */
 void AArenaGrid::EndRound()
 {
 	// Reset the center tile to it's max height
@@ -159,14 +153,11 @@ void AArenaGrid::EndRound()
 	FloorHeights.Empty();
 }
 
-/*
-* SaveState
-* Save the current hex grid state to the saved state array at the specified index.
-* If no index is given will append to the end of the array
-*	-Param index (default -1): The index to save at. Default or invalid appends
-*	-Param freshState: This governs whether current editor data is saved or ignored
-*	-Return result: The index at which the new save state was stored
-*/
+/** @brief Save the current hex grid state to the saved state array at the specified index.
+ *  @param {int} [index=-1] - The index to save at. Default or invalid appends
+ *  @param {bool} freshState - This governs whether current editor data is saved or ignored
+ *  @return {int} - The index at which the new save state was stored
+ */
 int AArenaGrid::SaveState(int index, bool freshState)
 {
 	FSaveState tmp;
@@ -197,20 +188,17 @@ int AArenaGrid::SaveState(int index, bool freshState)
 	return result;
 }
 
-/*
-* Generate Heights
-* Calls the calculate tile positions protected function in order to randomize heights
-*/
+/** @brief Calls the calculate tile positions protected function in order to randomize heights
+ *  @param {float} scale - A float scale factor for the Perlin noise sample
+ */
 void AArenaGrid::GenerateHeights(float scale)
 {
 	CalculateTilePositions(scale);
 }
 
-/*
-* EraseHeightState
-* Erases the save state stored at the given index
-*	-Param index: The index of the saved state to erase
-*/
+/** @brief Erases the save state stored at the given index
+ *  @param {int} index - The index of the saved state to erase
+ */
 void AArenaGrid::EraseHeightState(int index)
 {
 	if (SavedStates.IsValidIndex(index))
@@ -219,16 +207,14 @@ void AArenaGrid::EraseHeightState(int index)
 	}
 }
 
-/*
-* LoadSaveState
-* Loads the save state stored at the given index. If there is an invalid index loads the 
-*	default arena map.
-* This is effectively SpawnFloor but with stored level data rather than defaults
-*	-Param index: The index of the save state to load
-*	- Param origin: origin point of the grid (aka the center of the grid)
-*	- Param radius: the radius of the grid
-*	- Param padding the amount of padding between each cell in the grid
-*/
+/** @brief Loads the save state stored at the given index. If there is an invalid index loads the 
+ *		default arena map.
+ *	This is effectively SpawnFloor but with stored level data rather than defaults
+ *  @param {int} index - The index of the saved state to load
+ *  @param {FVector} origin - Origin point of the grid (aka the center of the grid)
+ *  @param {int} radius - The radius of the grid
+ *  @param {float} padding - The amount of padding between each cell in the grid
+ */
 void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padding)
 {
 	if (SavedStates.IsValidIndex(index))
