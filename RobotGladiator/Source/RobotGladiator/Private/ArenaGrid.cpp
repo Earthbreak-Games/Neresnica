@@ -295,10 +295,8 @@ void AArenaGrid::BeginPlay()
 	Super::BeginPlay();
 }
 
-/*
-* CalculateTilePositions
-* Calculates the position of each tile using simplex noise
-*/
+/** @brief Calculates the position of each tile using simplex noise
+ */
 void AArenaGrid::CalculateTilePositions(float scale)
 {
 	// Clear previous heights
@@ -327,13 +325,12 @@ void AArenaGrid::CalculateTilePositions(float scale)
  		FloorHeights.Add(height);
 	}
 }
-/*
-* Calculate Ring
-* Calculates a ring around a tile with a given radius
-*	-Param center: the center tile of the ring
-*	-Param radius: the radius of the ring (in tiles)
-* See https://www.redblobgames.com/grids/hexagons/ (Rings Section) for more info
-*/
+
+/** @brief Calculates a ring around a tile with a given radius
+ *  @param {HexCell} center - The center tile of the ring
+ *  @param {int} radius - The radius of the ring (in tiles)
+ *  @references See https://www.redblobgames.com/grids/hexagons/ (Rings Section) for more info
+ */
 void AArenaGrid::CalculateRing(HexCell center, int radius)
 {	
 	// Calculate the location of the first cell in the ring

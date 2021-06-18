@@ -1,10 +1,13 @@
-/*
-* ArenaGrid.h
-* Purpose: Declares the Arena Grid class which is responsible for generating and managing a hexagonal grid
-* Dependencies: HexCell.h
-* Primary Author: Ethan Heil
-*	State Saving/Editing Additions: Henry Chronowski
-*/
+/**
+ * @file ArenaGrid.h
+ * @brief Declares the Arena Grid class which is responsible for generating and managing a hexagonal grid
+ * @dependencies HexCell.h
+ *
+ * @author Ethan Heil
+ * @author Henry Chronowski - State Saving/Editing
+ * @credits
+ *	https://www.redblobgames.com/grids/hexagons/
+ **/
 
 #pragma once
 
@@ -131,8 +134,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	/** @brief Calculates the position of each tile using simplex noise
+	 */
 	void CalculateTilePositions(float scale = 1.0f);
 
+	/** @brief Calculates a ring around a tile with a given radius
+	 *  @param {HexCell} center - The center tile of the ring
+	 *  @param {int} radius - The radius of the ring (in tiles)
+	 *  @references See https://www.redblobgames.com/grids/hexagons/ (Rings Section) for more info
+	 */
 	void CalculateRing(HexCell center, int radius);
 
 public:	
