@@ -1,9 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+/**
+ * @file GladiatorBase.h
+ * @brief the base c++ class to handle internal logic for gladiators
+ * @dependencies BaseUnit.h
+ *
+ * @author Chris Foster
+ * @credits 
+ **/
+
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../RobotGladiatorCharacter.h"
+#include "BaseUnit.h"
 #include "GladiatorBase.generated.h"
 
 /**
@@ -15,12 +24,15 @@ References: <For the love of god>
 
  */
 UCLASS()
-class ROBOTGLADIATOR_API AGladiatorBase : public ACharacter
+class ROBOTGLADIATOR_API AGladiatorBase : public ABaseUnit
 {
 	GENERATED_BODY()
 
-	/**  The current target on the gladiator*/
-	//UFUNCTION
+
+	/** @brief Get the closes player to the gladiator
+	*	@param {TArray<AActor*>} Array - array of actors to choose from -
+	*   @return {AActor*} - the closest player to the gladiator
+	*/
 	AActor* GetClosestPlayer(TArray<AActor*> Array);
 
 
@@ -48,9 +60,6 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mStoppingDistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float mHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMeleeRange;

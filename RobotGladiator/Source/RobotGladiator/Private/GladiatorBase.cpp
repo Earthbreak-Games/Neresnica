@@ -26,16 +26,15 @@ void AGladiatorBase::BeginPlay()
 	}
 }
 
+/**   @brief Get the closes player to the gladiator
+ *	  @param {TArray<AActor*>} Array - array of actors to choose from - 
+ *    @return {AActor*} - the closest player to the gladiator
+ */
 AActor* AGladiatorBase::GetClosestPlayer(TArray<AActor*> Array)
 {
 	AActor* closestPlayer = nullptr;
 	float distance = INT_MAX;
 
-	//log all actors found for debugging
-	for (AActor* actor : Array)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Names: %s"), *actor->GetName());
-	}
 
 	//find the closes actor
 	for (AActor* actor : Array)
@@ -52,7 +51,7 @@ AActor* AGladiatorBase::GetClosestPlayer(TArray<AActor*> Array)
 			{
 				FVector dir = actor->GetActorLocation() - this->GetActorLocation();
 
-				if (dir.Size() < distance)//potentially rework to use sizesquared
+				if (dir.SizeSquared() < distance * distance)
 				{
 					closestPlayer = actor;
 					distance = dir.Size();
@@ -64,6 +63,10 @@ AActor* AGladiatorBase::GetClosestPlayer(TArray<AActor*> Array)
 	return closestPlayer;
 }
 
+/**   @brief Called every frame
+ *	  @param {float} deltaTime - time elapsed since last tick call
+ *    @return {void} - null
+ */
 void AGladiatorBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
