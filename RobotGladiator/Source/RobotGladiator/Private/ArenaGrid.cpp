@@ -60,11 +60,11 @@ void AArenaGrid::SpawnFloor(FVector origin, int radius, float padding)
 			FVector tileOffset;
 			if (currentCell.GetQ() == 0 && currentCell.GetR() == 0)
 			{
-				tileOffset = FVector(xPos, yPos, MaxHeight);
+				//tileOffset = FVector(xPos, yPos, MaxHeight);
 				center = currentCell;
 			}
-			else
-				tileOffset = FVector(xPos, yPos, GetTransform().GetLocation().Z) * padding;
+			//else
+			tileOffset = FVector(xPos, yPos, GetTransform().GetLocation().Z) * padding;
 
 			// Spawn new tile
 			FRotator rot = this->GetActorRotation();
@@ -134,6 +134,15 @@ void AArenaGrid::EndRound()
 
 	// Clear floor heights
 	FloorHeights.Empty();
+}
+
+
+void AArenaGrid::SetupLobbyOrientation(int numTiles)
+{
+	for (int i = 0; i < numTiles; i++)
+	{
+		FloorPieces[i]->SetActorLocation(FVector(FloorPieces[i]->GetActorLocation().X, FloorPieces[i]->GetActorLocation().Y, -MaxHeight));
+	}
 }
 
 int AArenaGrid::SaveState(int index, bool freshState)

@@ -80,6 +80,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndRound();
 
+	UFUNCTION(BlueprintCallable)
+	void SetupLobbyOrientation(int numTiles);
+
 	/** @brief Save the current hex grid state to the saved state array at the specified index.
 	*  @param {int} [index=-1] - The index to save at. Default or invalid appends
 	*  @param {bool} freshState - This governs whether current editor data is saved or ignored
