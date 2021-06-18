@@ -1,9 +1,11 @@
-/*
-* Armor.h
-* Purpose: Declares the specific functionality of a piece of armor
-* Dependencies: LootEnums.h
-* Primary Author: Ethan Heil
-*/
+/**
+ * @file Armor.h
+ * @brief Declares the specific functionality of a piece of armor
+ * @dependencies LootEnums.h
+ *
+ * @author Ethan Heil
+ * @credits
+ **/
 
 #pragma once
 
@@ -19,19 +21,26 @@ class ROBOTGLADIATOR_API AArmor : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
+	/** @brief Default Constructor for an armor piece
+	 */
 	AArmor();
 
-	// Sets the stats for this armor piece
 	UFUNCTION(BlueprintCallable)
+	/** @brief Sets the stats for this armor piece
+	 *  @param {int} defense - Base defense of the armor piece
+	 *  @param {ERarities} rarity - Rarity of the armor
+	 *  @param {EArmorTypes} type - The armor type
+	 */
 	void SetArmorStats(int defense, ERarities rarity, EArmorTypes type);
 
 protected:
-	// Called when the game starts or when spawned
+	/** @brief Called at the start of a scene, used for initialization
+	 */
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+	/** @brief Called every frame
+	 */
 	virtual void Tick(float DeltaTime) override;
 
 public:
