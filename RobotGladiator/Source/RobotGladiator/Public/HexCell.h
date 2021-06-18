@@ -1,11 +1,13 @@
-/**
- * HexCell.h
- * Purpose: Class to hold data for a hexagonal cell (stored in Cube coordinates).
- * Refer to https://www.redblobgames.com/grids/hexagons/implementation.html for more info
- * This file also holds helper functions for HexCell operations
- * Dependencies: None
- * Primary Author: Ethan Heil
- */
+ /**
+  * @file HexCell.h
+  * @brief Class to hold data for a hexagonal cell (stored in Cube coordinates).
+  *		   This file also holds helper functions for HexCell operations
+  * @dependencies None
+  *
+  * @author Ethan Heil
+  * @credits
+  *	https://www.redblobgames.com/grids/hexagons/
+  **/
 
 #pragma once
 
@@ -47,9 +49,15 @@ const TArray<HexCell> HexDirections =
 	HexCell(0, 1, -1), // Bottom-Right
 };
 
-// Convert from Cube coordinate to Axial coordinates
+/** @brief Converts the coordinates from a given HexCell into Axial coordinates
+ *  @param {HexCell} cell - Cell to be converted (stored in Cube coordinates)
+ *  @return {HexCell} - Returns a new HexCell stored in Axial coordinates
+ */
 HexCell CubeToAxial(HexCell cell);
-// Convert from Axial coordinates to Cube coordinates
+/** @brief Converts the coordinates from a given HexCell into Cube coordinates
+ *  @param {HexCell} cell - Cell to be converted (stored in Axial coordinates)
+ *  @return {HexCell} - Returns a new HexCell stored in Cube coordinates
+ */
 HexCell AxialToCube(HexCell cell);
 // Adds the components of two HexCells
 HexCell AddHex(HexCell a, HexCell b);
@@ -67,5 +75,16 @@ HexCell GetHexDirection(int face);
 HexCell GetNeighbor(HexCell cell, int face);
 
 // Operator overloads
+
+/** @brief Operator==
+ *  @param {HexCell} a - lhs object to be compared
+ *  @param {HexCell} b - rhs object to be compared
+ *  @return {bool} - Returns true if all components of each HexCell are equal, otherwise returns false
+ */
 bool operator==(HexCell a, HexCell b);
+/** @brief Operator!=
+ *  @param {HexCell} a - lhs object to be compared
+ *  @param {HexCell} b - rhs object to be compared
+ *  @return {bool} - Returns true if all components of each HexCell are not equal, otherwise returns false
+ */
 bool operator!=(HexCell a, HexCell b);
