@@ -1,5 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+/**
+ * @file BaseUnit.h
+ * @brief the base c++ class to contain health and functions related to taking and dealing damage
+ * @dependencies Character.h
+ *
+ * @author Chris Foster
+ * @credits
+ **/
 
 #include "BaseUnit.h"
 

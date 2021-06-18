@@ -1,5 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+/**
+ * @file GladiatorBase.h
+ * @brief the base c++ class to handle internal logic for gladiators
+ * @dependencies BaseUnit.h
+ *
+ * @author Chris Foster
+ * @credits
+ **/
 
 #include "GladiatorBase.h"
 #include "Kismet/GameplayStatics.h"
