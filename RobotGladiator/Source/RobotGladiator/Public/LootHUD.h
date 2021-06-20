@@ -1,9 +1,10 @@
-/*
-* LootHUD.h
-* Purpose: Base class for loot HUD widget
-* Dependencies: Blueprint/UserWidget
-* Primary Author: Ethan Heil
-*/
+/**
+ * @file LootHUD.h
+ * @brief Base class for loot HUD widget
+ * @dependencies Blueprint/UserWidget
+ *
+ * @author Ethan Heil
+ **/
 
 #pragma once
 

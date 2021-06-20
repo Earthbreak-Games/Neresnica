@@ -1,9 +1,10 @@
-/*
-* LootHUD.cpp
-* Purpose: Base class for loot HUD widget
-* Dependencies: None
-* Primary Author: Ethan Heil
-*/
+/**
+ * @file LootHUD.cpp
+ * @brief Base class for loot HUD widget
+ * @dependencies None
+ *
+ * @author Ethan Heil
+ **/
 
 #include "LootHUD.h"
 

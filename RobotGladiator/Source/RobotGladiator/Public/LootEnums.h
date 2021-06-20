@@ -1,9 +1,10 @@
-/*
-* LootEnums.h
-* Purpose: Declares all enums that deal with loot and rarities
-* Dependencies: None
-* Primary Author: Ethan Heil
-*/
+/**
+ * @file LootEnums.h
+ * @brief Declares all enums that deal with loot and rarities
+ * @dependencies None
+ *
+ * @author Ethan Heil
+ **/
 
 #pragma once
 
