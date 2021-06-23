@@ -177,6 +177,7 @@ int AArenaGrid::SaveState(int index, bool freshState)
 
 void AArenaGrid::GenerateHeights(float scale)
 {
+	scale *= 0.001;
 	CalculateTilePositions(scale);
 }
 

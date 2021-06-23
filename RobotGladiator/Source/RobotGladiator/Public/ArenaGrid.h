@@ -93,7 +93,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Calls the calculate tile positions protected function in order to randomize heights
-	*  @param {float} scale - A float scale factor for the Perlin noise sample
+	*  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
 	*/
 	void GenerateHeights(float scale = 1.0f);
 
