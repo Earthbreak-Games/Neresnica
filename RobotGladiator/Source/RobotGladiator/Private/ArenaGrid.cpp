@@ -189,7 +189,7 @@ void AArenaGrid::EraseHeightState(int index)
 	}
 }
 
-void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padding)
+void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, float padding)
 {
 	if (SavedStates.IsValidIndex(index))
 	{

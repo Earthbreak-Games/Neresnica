@@ -23,6 +23,7 @@ struct FSaveState
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> mHeights;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -112,7 +113,7 @@ public:
 	 *  @param {int} radius - The radius of the grid
 	 *  @param {float} padding - The amount of padding between each cell in the grid
 	 */
-	void LoadSaveState(int index, FVector origin, int radius, float padding);
+	void EditorLoadSaveState(int index, FVector origin, int radius, float padding);
 
 public:
 	UPROPERTY(EditAnywhere)
