@@ -44,18 +44,21 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* 
 		PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable)
 	/**   @brief Take damage and decrement mHealth
 	*    @param {float} damage - damage to be taken
 	*    @return {void} null
 	*/
 	void TakeDamage(float damage);
 
+	UFUNCTION(BlueprintCallable)
 	/**   @brief <heal>
 	*    @param {<float>} hp - health
 	*    @return {<void>} null
 	*/
 	void Heal(float hp);
 
+	UFUNCTION(BlueprintCallable)
 	/**   @brief <heal>
 	*	  @param {ABaseUnit*} oposingUnit - <unit to take damage>
 	*    @param {<float>} damage - damage>

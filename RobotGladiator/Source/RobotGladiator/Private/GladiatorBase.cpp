@@ -86,13 +86,22 @@ void AGladiatorBase::Tick(float DeltaTime)
 	if (mpTarget == nullptr || (mpTarget != nullptr && target != mpTarget))
 	{
 		mpTarget = target;
+
+		//UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *(mpTarget->GetName()));
+
+		
+	}
+	else if(mpTarget != nullptr)
+	{
+		FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
+		mDistanceToTarget = dir.Size();
 	}
 
+	//UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *(mpTarget->GetName()));
 
-	FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
-	mDistanceToTarget = dir.Size();
+
 	
-	if ( !mIsOnCooldown && !mIsAttacking)
+	if ( !mIsOnCooldown && !mIsAttacking && mpTarget != nullptr)
 	{
 	
 
