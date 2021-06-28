@@ -16,6 +16,9 @@
 AGladiatorBase::AGladiatorBase()
 {
 	SetActorTickEnabled(true);
+
+	mTimeLeftOnCoolDown = 6;
+	mIsOnCooldown = true;
 }
 
 void AGladiatorBase::BeginPlay()
@@ -97,7 +100,7 @@ void AGladiatorBase::Tick(float DeltaTime)
 		mDistanceToTarget = dir.Size();
 	}
 
-	//UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *(mpTarget->GetName()));
+	
 
 
 	
