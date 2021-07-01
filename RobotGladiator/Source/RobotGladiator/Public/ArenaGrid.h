@@ -23,6 +23,7 @@ struct FSaveState
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> mHeights;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -93,7 +94,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Calls the calculate tile positions protected function in order to randomize heights
-	*  @param {float} scale - A float scale factor for the Perlin noise sample
+	*  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
 	*/
 	void GenerateHeights(float scale = 1.0f);
 
@@ -112,7 +113,7 @@ public:
 	 *  @param {int} radius - The radius of the grid
 	 *  @param {float} padding - The amount of padding between each cell in the grid
 	 */
-	void LoadSaveState(int index, FVector origin, int radius, float padding);
+	void EditorLoadSaveState(int index, FVector origin, int radius, float padding);
 
 public:
 	UPROPERTY(EditAnywhere)
