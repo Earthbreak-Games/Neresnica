@@ -58,8 +58,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void RangedAttack();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float mStoppingDistance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMeleeRange;
@@ -72,7 +70,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMeleeCoolDown;
-
 
 	float mTimeLeftOnCoolDown;
 

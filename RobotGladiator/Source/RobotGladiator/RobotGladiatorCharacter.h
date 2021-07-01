@@ -10,10 +10,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Public/BaseUnit.h"
 #include "RobotGladiatorCharacter.generated.h"
 
+
 UCLASS(config=Game)
-class ARobotGladiatorCharacter : public ACharacter
+class ARobotGladiatorCharacter : public ABaseUnit
 {
 	GENERATED_BODY()
 
