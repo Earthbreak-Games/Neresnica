@@ -177,6 +177,7 @@ int AArenaGrid::SaveState(int index, bool freshState)
 
 void AArenaGrid::GenerateHeights(float scale)
 {
+	scale *= 0.001;
 	CalculateTilePositions(scale);
 }
 
@@ -188,7 +189,7 @@ void AArenaGrid::EraseHeightState(int index)
 	}
 }
 
-void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padding)
+void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, float padding)
 {
 	if (SavedStates.IsValidIndex(index))
 	{
