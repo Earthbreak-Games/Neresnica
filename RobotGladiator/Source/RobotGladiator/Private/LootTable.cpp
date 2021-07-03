@@ -1,16 +1,13 @@
-/*
-* LootTable.h
-* Purpose: Defines the functionality of a loot table 
-* Dependencies: None
-* Primary Author: Ethan Heil
-*/
+/**
+ * @file LootTable.cpp
+ * @brief Defines the functionality of a loot table 
+ * @dependencies None
+ *
+ * @author Ethan Heil
+ **/
 
 #include "LootTable.h"
 
-/*
-* ULootTable
-* Default Constructor for the loot table
-*/
 ULootTable::ULootTable()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
@@ -23,20 +20,11 @@ ULootTable::ULootTable()
 	EpicPercentage = 10.0f;
 }
 
-/*
-* BeginPlay
-* Called at the start of a scene, used for initialization
-*/
 void ULootTable::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-/*
-* ChooseRarity
-* Chooses a rarity for an item. Each rarity has a weighted percentage
-*	-Param modifier: decreases the chance of getting a lower tier rarity
-*/
 ERarities ULootTable::ChooseRarity(float modifier = 0.0f)
 {
 	// Get random number between 0 and 100
@@ -56,12 +44,6 @@ ERarities ULootTable::ChooseRarity(float modifier = 0.0f)
 	return COMMON;
 }
 
-/*
-* ChooseItemType
-* Chooses an item type based on the type of enemy.
-*	-Param enemyType: the type of enemy
-*	-Param modifier: decreases the chance of getting a lower tier item
-*/
 ELootTypes ULootTable::ChooseItemType(EEnemyTypes enemyType, float modifier = 0.0f)
 {
 	// Grunt loot drops
@@ -86,10 +68,6 @@ ELootTypes ULootTable::ChooseItemType(EEnemyTypes enemyType, float modifier = 0.
 	return WEAPON;
 }
 
-/*
-* TickComponent
-* Called every frame
-*/
 void ULootTable::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);

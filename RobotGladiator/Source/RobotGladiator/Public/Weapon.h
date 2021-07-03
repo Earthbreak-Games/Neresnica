@@ -1,9 +1,10 @@
-/*
-* Weapon.h
-* Purpose: Declares the specific functionality of a weapon
-* Dependencies: LootEnums.h
-* Primary Author: Ethan Heil
-*/
+/**
+ * @file Weapon.h
+ * @brief Declares the specific functionality of a weapon
+ * @dependencies LootEnums.h
+ *
+ * @author Ethan Heil
+ **/
 
 #pragma once
 
@@ -18,19 +19,26 @@ class ROBOTGLADIATOR_API AWeapon : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
+	/** @brief Default Constructor for a weapon
+	 */
 	AWeapon();
 
-	// Set the stats for this weapon
 	UFUNCTION(BlueprintCallable)
+	/** @brief Sets the stats for this weapon
+	 *  @param {int} baseDamage - Base damage of the weapon
+	 *  @param {ERarities} rarity - Rarity of the weapon
+	 *  @param {EWeaponTypes} type - The weapon type
+	 */
 	void SetWeaponStats(int baseDamage, ERarities rarity, EWeaponTypes type);
 
 protected:
-	// Called when the game starts or when spawned
+	/** @brief Called at the start of a scene, used for initialization
+	 */
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+	/** @brief Called every frame
+	 */
 	virtual void Tick(float DeltaTime) override;
 
 public:

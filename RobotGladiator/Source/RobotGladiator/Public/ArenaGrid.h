@@ -23,6 +23,7 @@ struct FSaveState
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> mHeights;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -49,17 +50,17 @@ class ROBOTGLADIATOR_API AArenaGrid : public AActor
 public:	
 	AArenaGrid();
 
+	UFUNCTION(BlueprintCallable)
 	/** @brief Spawns a hexagonal grid in the world at a given point
 	*  @param {FVector} origin - Origin point of the grid (aka the center of the grid)
 	*  @param {int} radius - The radius of the grid
 	*  @param {float} padding - The amount of padding between each cell in the grid
 	*/
-	UFUNCTION(BlueprintCallable)
 	void SpawnFloor(FVector origin, int radius, float padding);
 
+	UFUNCTION(BlueprintCallable)
 	/** @brief Clears the currently generated grid from the scene and resets all grid data
 	*/
-	UFUNCTION(BlueprintCallable)
 	void ClearFloor();
 
 	/** @brief Initializes the hex grid's data
@@ -70,39 +71,40 @@ public:
 	*/
 	void InitHexGrid(int radius);
 
+	UFUNCTION(BlueprintCallable)
 	/** @brief Activates the starting sequence for the current round
 	*/
-	UFUNCTION(BlueprintCallable)
 	void StartRound();
 
+	UFUNCTION(BlueprintCallable)
 	/** @brief Activates the ending sequence for the current round
 	*/
-	UFUNCTION(BlueprintCallable)
 	void EndRound();
 
 	UFUNCTION(BlueprintCallable)
 	void SetupLobbyOrientation(int numTiles);
 
-	/** @brief Save the current hex grid state to the saved state array at the specified index.
-	*  @param {int} [index=-1] - The index to save at. Default or invalid appends
-	*  @param {bool} freshState - This governs whether current editor data is saved or ignored
-	*  @return {int} - The index at which the new save state was stored
-	*/
 	UFUNCTION(BlueprintCallable)
+	/** @brief Save the current hex grid state to the saved state array at the specified index.
+	 *  @param {int} [index=-1] - The index to save at. Default or invalid appends
+	 *  @param {bool} freshState - This governs whether current editor data is saved or ignored
+	 *  @return {int} - The index at which the new save state was stored
+	 */
 	int SaveState(int index = -1, bool freshState = true);
 
-	/** @brief Calls the calculate tile positions protected function in order to randomize heights
-	*  @param {float} scale - A float scale factor for the Perlin noise sample
-	*/
 	UFUNCTION(BlueprintCallable)
+	/** @brief Calls the calculate tile positions protected function in order to randomize heights
+	*  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
+	*/
 	void GenerateHeights(float scale = 1.0f);
 
+	UFUNCTION(BlueprintCallable)
 	/** @brief Erases the save state stored at the given index
 	*  @param {int} index - The index of the saved state to erase
 	*/
-	UFUNCTION(BlueprintCallable)
 	void EraseHeightState(int index);
 
+	UFUNCTION(BlueprintCallable)
 	/** @brief Loads the save state stored at the given index. If there is an invalid index loads the
 	 *		default arena map.
 	 *	This is effectively SpawnFloor but with stored level data rather than defaults
@@ -111,8 +113,7 @@ public:
 	 *  @param {int} radius - The radius of the grid
 	 *  @param {float} padding - The amount of padding between each cell in the grid
 	 */
-	UFUNCTION(BlueprintCallable)
-	void LoadSaveState(int index, FVector origin, int radius, float padding);
+	void EditorLoadSaveState(int index, FVector origin, int radius, float padding);
 
 public:
 	UPROPERTY(EditAnywhere)

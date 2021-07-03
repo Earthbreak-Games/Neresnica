@@ -16,6 +16,9 @@
 AGladiatorBase::AGladiatorBase()
 {
 	SetActorTickEnabled(true);
+
+	mTimeLeftOnCoolDown = 6;
+	mIsOnCooldown = true;
 }
 
 void AGladiatorBase::BeginPlay()
@@ -86,13 +89,22 @@ void AGladiatorBase::Tick(float DeltaTime)
 	if (mpTarget == nullptr || (mpTarget != nullptr && target != mpTarget))
 	{
 		mpTarget = target;
+
+		//UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *(mpTarget->GetName()));
+
+		
+	}
+	else if(mpTarget != nullptr)
+	{
+		FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
+		mDistanceToTarget = dir.Size();
 	}
 
-
-	FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
-	mDistanceToTarget = dir.Size();
 	
-	if ( !mIsOnCooldown && !mIsAttacking)
+
+
+	
+	if ( !mIsOnCooldown && !mIsAttacking && mpTarget != nullptr)
 	{
 	
 
