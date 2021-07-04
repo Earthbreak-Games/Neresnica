@@ -19,6 +19,8 @@
 #include "ArenaGrid.generated.h"
 
 USTRUCT(BlueprintType)
+/** @brief A struct encompassing the data saved for each hex cell
+ */
 struct FSaveState
 {
 	GENERATED_BODY()
@@ -28,10 +30,13 @@ public:
 	TArray<float> mHeights;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString mName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int mModifiers;
 
 	FSaveState(TArray<float> in) : mHeights(in)
 	{
 		mName = "";
+		mModifiers = 0;
 	}
 
 	// Sets default values for this actor's properties
@@ -39,6 +44,7 @@ public:
 	{
 		mHeights.AddZeroed();
 		mName = "";
+		mModifiers = 0;
 	}
 };
 
