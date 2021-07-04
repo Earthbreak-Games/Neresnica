@@ -29,6 +29,8 @@ class ARobotGladiatorCharacter : public ABaseUnit
 public:
 	ARobotGladiatorCharacter();
 
+public:
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
