@@ -10,7 +10,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Public/BaseUnit.h"
+#include "BaseUnit.h"
 #include "RobotGladiatorCharacter.generated.h"
 
 
