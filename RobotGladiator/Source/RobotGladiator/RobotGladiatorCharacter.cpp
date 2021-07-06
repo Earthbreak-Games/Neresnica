@@ -59,6 +59,30 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
+void ARobotGladiatorCharacter::SetBaseDamage(float damage, float modifier /*= 0.0f*/)
+{
+	float bonus = BaseDamage * modifier;
+	BaseDamage += bonus;
+}
+
+void ARobotGladiatorCharacter::SetBaseAttackSpeed(float attackSpeed, float modifier /*= 0.0f*/)
+{
+	float bonus = BaseAttackSpeed * modifier;
+	BaseAttackSpeed += bonus;
+}
+
+void ARobotGladiatorCharacter::SetBaseMovementSpeed(float speed, float modifier /*= 0.0f*/)
+{
+	float bonus = GetCharacterMovement()->MaxWalkSpeed * modifier;
+	GetCharacterMovement()->MaxWalkSpeed += bonus;
+}
+
+void ARobotGladiatorCharacter::SetBaseRegen(float regenRate, float modifier /*= 0.0f*/)
+{
+	float bonus = BaseHealthRegen * modifier;
+	BaseHealthRegen += bonus;
+}
+
 /*
 * SetupPlayerInputComponent
 * Set up and bind player inputs
