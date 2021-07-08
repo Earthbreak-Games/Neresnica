@@ -75,6 +75,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BaseHealthRegen;
 
+	UPROPERTY(EditAnywhere, BLueprintReadWrite)
+	float MaxAttackSpeed;
+
 protected:
 
 	// Called for forwards/backward input
