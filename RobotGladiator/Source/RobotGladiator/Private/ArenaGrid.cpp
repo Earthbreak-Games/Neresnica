@@ -263,12 +263,21 @@ void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, floa
 	}
 }
 
-void AArenaGrid::LoadSaveState(int& index, float scale)
+void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 {
-	DEBUGMESSAGE("This is formatted %i %f", 100, 99.999)
-	if (index >= SavedStates.Num())
+	// Load the next saved state if one exists, if not generate a new arena
+	if (SavedStates.IsValidIndex(index))
 	{
+		DEBUGMESSAGE("Loading Saved State %i", index);
+		FloorHeights.Empty();
+		FloorHeights = SavedStates[index].mHeights;
+		index++;
+	}
+	else
+	{
+		DEBUGMESSAGE("Generating new arena")
 		CalculateTilePositions(scale);
+		index++;
 	}
 }
 

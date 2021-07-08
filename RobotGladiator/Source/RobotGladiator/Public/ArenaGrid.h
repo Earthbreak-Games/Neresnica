@@ -135,7 +135,7 @@ public:
 	 *  @param {int} index - The number of the current arena state
 	 *  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
 	 */
-	void LoadSaveState(int&index, float scale);
+	void LoadSaveState(UPARAM(ref) int&index, float scale);
 
 public:
 	UPROPERTY(EditAnywhere)
