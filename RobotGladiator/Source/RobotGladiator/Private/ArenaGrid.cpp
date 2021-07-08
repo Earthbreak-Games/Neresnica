@@ -263,6 +263,15 @@ void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, floa
 	}
 }
 
+void AArenaGrid::LoadSaveState(int& index, float scale)
+{
+	DEBUGMESSAGE("This is formatted %i %f", 100, 99.999)
+	if (index >= SavedStates.Num())
+	{
+		CalculateTilePositions(scale);
+	}
+}
+
 // Called when the game starts or when spawned
 void AArenaGrid::BeginPlay()
 {

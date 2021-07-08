@@ -18,6 +18,8 @@
 #include "Math/UnrealMathUtility.h"
 #include "ArenaGrid.generated.h"
 
+#define DEBUGMESSAGE(x, ...) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT(x), __VA_ARGS__));}
+
 USTRUCT(BlueprintType)
 /** @brief A struct encompassing the data saved for each hex cell
  */
@@ -32,6 +34,12 @@ public:
 	FString mName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int mModifiers;
+
+	static enum ModifierIDs
+	{
+		NONE = 0,
+		TOPPER
+	};
 
 	FSaveState(TArray<float> in) : mHeights(in)
 	{
@@ -111,8 +119,8 @@ public:
 	void EraseHeightState(int index);
 
 	UFUNCTION(BlueprintCallable)
-	/** @brief Loads the save state stored at the given index. If there is an invalid index loads the
-	 *		default arena map.
+	/** @brief Loads the save state stored at the given index in the arena editor.
+	 *		If there is an invalid index loads the default arena map.
 	 *	This is effectively SpawnFloor but with stored level data rather than defaults
 	 *  @param {int} index - The index of the saved state to load
 	 *  @param {FVector} origin - Origin point of the grid (aka the center of the grid)
@@ -120,6 +128,14 @@ public:
 	 *  @param {float} padding - The amount of padding between each cell in the grid
 	 */
 	void EditorLoadSaveState(int index, FVector origin, int radius, float padding);
+
+	UFUNCTION(BlueprintCallable)
+	/** @brief Loads the next level during gameplay. Loads from the saved state if any remain,
+	 *		if not generates a new level from scratch.
+	 *  @param {int} index - The number of the current arena state
+	 *  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
+	 */
+	void LoadSaveState(int&index, float scale);
 
 public:
 	UPROPERTY(EditAnywhere)
