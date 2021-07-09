@@ -115,6 +115,8 @@ void AGladiatorBase::Tick(float DeltaTime)
 		}
 		else
 		{
+			//add function to get farthest player from gladiator
+
 			RangedAttack();
 			mTimeLeftOnCoolDown = mRangedCoolDownTime;
 
