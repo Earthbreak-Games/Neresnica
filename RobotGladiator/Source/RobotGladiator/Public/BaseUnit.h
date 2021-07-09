@@ -36,7 +36,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
 public:	
+	 void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -49,7 +52,8 @@ public:
 	*    @param {float} damage - damage to be taken
 	*    @return {void} null
 	*/
-	void TakeDamage(float damage);
+	void TakeDamage_Unit(float damage);
+
 
 	UFUNCTION(BlueprintCallable)
 	/**   @brief <heal>

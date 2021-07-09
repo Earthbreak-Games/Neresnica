@@ -134,5 +134,5 @@ void AGladiatorBase::Tick(float DeltaTime)
 	}
 
 
-	UE_LOG(LogTemp, Warning, TEXT("Cooldown: %s"), *(FString::SanitizeFloat(mTimeLeftOnCoolDown)));
+	//UE_LOG(LogTemp, Warning, TEXT("Cooldown: %s"), *(FString::SanitizeFloat(mTimeLeftOnCoolDown)));
 }
