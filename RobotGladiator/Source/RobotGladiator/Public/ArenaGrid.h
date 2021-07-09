@@ -38,7 +38,9 @@ public:
 	static enum ModifierIDs
 	{
 		NONE = 0,
-		TOPPER
+		TOPPER,
+
+		NUM_MODIFIERS
 	};
 
 	FSaveState(TArray<float> in) : mHeights(in)
@@ -110,7 +112,7 @@ public:
 	/** @brief Calls the calculate tile positions protected function in order to randomize heights
 	*  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
 	*/
-	void GenerateHeights(float scale = 1.0f);
+	void GenerateArena(float chance, float scale = 1.0f);
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Erases the save state stored at the given index
@@ -144,6 +146,8 @@ public:
 	TArray<AActor*> FloorPieces;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<float> FloorHeights;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<int> FloorModifiers;
 	TArray<HexCell> Cells;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FSaveState> SavedStates;
@@ -163,6 +167,11 @@ protected:
 	/** @brief Calculates the position of each tile using simplex noise
 	 */
 	void CalculateTilePositions(float scale = 1.0f);
+
+	/** @brief Calculates the modifiers on each tile
+	 *	@param {float} chance - The probability that a given tile will not have a modifier, as a percentage out of 100
+	 */
+	void CalculateTileModifiers(float chance);
 
 	/** @brief Calculates a ring around a tile with a given radius
 	 *  @param {HexCell} center - The center tile of the ring

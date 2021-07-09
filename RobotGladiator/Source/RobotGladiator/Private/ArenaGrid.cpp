@@ -11,6 +11,8 @@
 
 #include "ArenaGrid.h"
 
+#define ModifierIDs FSaveState::ModifierIDs
+
 // Sets default values
 AArenaGrid::AArenaGrid()
 {
@@ -175,10 +177,11 @@ int AArenaGrid::SaveState(int index, bool freshState)
 	return result;
 }
 
-void AArenaGrid::GenerateHeights(float scale)
+void AArenaGrid::GenerateArena(float chance, float scale)
 {
 	scale *= 0.001;
 	CalculateTilePositions(scale);
+	CalculateTileModifiers(chance);
 }
 
 void AArenaGrid::EraseHeightState(int index)
@@ -270,13 +273,14 @@ void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 	{
 		DEBUGMESSAGE("Loading Saved State %i", index);
 		FloorHeights.Empty();
+		// TODO: random selection
 		FloorHeights = SavedStates[index].mHeights;
 		index++;
 	}
 	else
 	{
 		DEBUGMESSAGE("Generating new arena")
-		CalculateTilePositions(scale);
+		GenerateArena(scale);
 		index++;
 	}
 }
@@ -313,6 +317,29 @@ void AArenaGrid::CalculateTilePositions(float scale)
 
 		// Add the new height to the array
  		FloorHeights.Add(height);
+	}
+}
+
+void AArenaGrid::CalculateTileModifiers(float chance)
+{
+	// Clear previous modifiers and split remaining percentage into each modifier
+	FloorModifiers.Empty();
+	float ratio = (100.0f - chance) / (ModifierIDs::NUM_MODIFIERS - 1);
+
+	// Generate new modifiers for each hex cell
+	float modifier;
+	for (int i = 0; i < FloorPieces.Num(); i++)
+	{
+		// Generate a random number from 0 to 100 and set the modifier
+		modifier = mRand.FRandRange(0.0f, 100.0f);
+		if (modifier > chance)
+		{
+			modifier -= chance;
+			modifier = fmod(modifier, ratio) + 1;
+		}
+
+		// Store the generated modifier in the save state
+		SavedStates[i].mModifiers = StaticCast<int>(modifier);
 	}
 }
 
