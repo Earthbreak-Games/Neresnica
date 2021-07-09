@@ -47,11 +47,6 @@ void ABaseUnit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ABaseUnit::TakeDamage(float damage)
 {
 	mHealth -= damage;
-
-	if (mHealth <= 0)
-	{
-		Destroy();
-	}
 }
 
 
@@ -77,5 +72,9 @@ void ABaseUnit::Heal(float hp)
 void ABaseUnit::DealDamage(ABaseUnit* oposingUnit, float damage)
 {
 	oposingUnit->TakeDamage(damage);
+	if (oposingUnit->mHealth <= 0)
+	{
+		oposingUnit->Destroy();
+	}
 }
 

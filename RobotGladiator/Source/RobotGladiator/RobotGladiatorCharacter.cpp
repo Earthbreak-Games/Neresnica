@@ -45,6 +45,7 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	// Set default player stats
 	BaseAttackSpeed = 8.0f;
 	MaxAttackSpeed = 20.0f;
+	mMaxHealth = 100.0f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
