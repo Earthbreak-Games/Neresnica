@@ -10,6 +10,7 @@
  **/
 
 #include "BaseUnit.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ABaseUnit::ABaseUnit()
@@ -24,6 +25,14 @@ void ABaseUnit::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ABaseUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABaseUnit, mHealth);
+	DOREPLIFETIME(ABaseUnit, mMaxHealth);
 }
 
 // Called every frame
@@ -47,6 +56,10 @@ void ABaseUnit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ABaseUnit::TakeDamage(float damage)
 {
 	mHealth -= damage;
+	if (mHealth <= 0)
+	{
+		Destroy();
+	}
 }
 
 
@@ -72,9 +85,5 @@ void ABaseUnit::Heal(float hp)
 void ABaseUnit::DealDamage(ABaseUnit* oposingUnit, float damage)
 {
 	oposingUnit->TakeDamage(damage);
-	if (oposingUnit->mHealth <= 0)
-	{
-		oposingUnit->Destroy();
-	}
 }
 

@@ -32,8 +32,6 @@ void AGladiatorBase::BeginPlay()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
 
 		mpTarget = GetClosestPlayer(foundActors);
-
-
 	}
 }
 
@@ -99,10 +97,6 @@ void AGladiatorBase::Tick(float DeltaTime)
 		FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
 		mDistanceToTarget = dir.Size();
 	}
-
-	
-
-
 	
 	if ( !mIsOnCooldown && !mIsAttacking && mpTarget != nullptr)
 	{

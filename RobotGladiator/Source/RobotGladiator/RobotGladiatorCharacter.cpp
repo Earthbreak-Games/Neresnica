@@ -46,6 +46,7 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	BaseAttackSpeed = 8.0f;
 	MaxAttackSpeed = 20.0f;
 	mMaxHealth = 100.0f;
+	mHealth = mMaxHealth;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
