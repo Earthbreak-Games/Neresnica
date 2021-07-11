@@ -19,6 +19,7 @@ AGladiatorBase::AGladiatorBase()
 
 	mTimeLeftOnCoolDown = 6;
 	mIsOnCooldown = true;
+	mHealth = 50.0f;
 }
 
 void AGladiatorBase::BeginPlay()
