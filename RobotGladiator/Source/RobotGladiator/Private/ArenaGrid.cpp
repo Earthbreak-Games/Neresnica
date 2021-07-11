@@ -268,13 +268,51 @@ void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, floa
 
 void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 {
+	// Clear any remaining data from the previous level
+	Enemies.Empty();
+	FloorHeights.Empty();
+
 	// Load the next saved state if one exists, if not generate a new arena
 	if (SavedStates.IsValidIndex(index))
 	{
+		// Get a reference to the saved state for easy access/readability
 		DEBUGMESSAGE("Loading Saved State %i", index);
-		FloorHeights.Empty();
-		// TODO: random selection
-		FloorHeights = SavedStates[index].mHeights;
+		FSaveState tmp = SavedStates[index];
+
+		// Load tile heights									// TODO: random selection
+		FloorHeights = tmp.mHeights;
+
+		// Spawn saved enemies
+		for (int i = 0; i < tmp.mModifiers.Num(); i++)
+		{
+			if (tmp.mModifiers[i] != 0)						// TEMPORARY SOLUTION FOR ALPHA THIS WILL BE (better be) CHANGED
+			{
+				// Init spawn parameters
+				FActorSpawnParameters spawnParams;
+				spawnParams.Owner = this;
+				spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				// Set spawn transform
+				FVector loc = FloorPieces[i]->GetActorLocation();
+				loc.Z += 900.0f;
+				FRotator rot = this->GetActorRotation();
+
+				// Spawn new enemy
+				AActor* enemy = GetWorld()->SpawnActor<AActor>(Gladiator, loc, rot, spawnParams);
+
+				// Child new enemy to the grid object
+				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+				enemy->AttachToActor(this, attachRules);
+
+				// Set the correct rotation of the floor piece
+				rot = FRotator(0.0f, 30.0f, 0.0f);
+				enemy->AddActorLocalRotation(rot);
+
+				// Add the enemy to the array
+				Enemies.Add(enemy);
+			}
+		}
+
 		index++;
 	}
 	else
@@ -337,10 +375,13 @@ void AArenaGrid::CalculateTileModifiers(float chance)
 			modifier -= chance;
 			modifier = fmod(modifier, ratio) + 1;
 		}
+		else
+		{
+			modifier = ModifierIDs::NONE;
+		}
 
 		// Store the generated modifier in the save state
 		FloorModifiers.Add(modifier);
-		//SavedStates[i].mModifiers = StaticCast<int>(modifier);
 	}
 }
 

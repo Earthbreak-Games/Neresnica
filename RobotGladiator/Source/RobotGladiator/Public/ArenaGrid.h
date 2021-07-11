@@ -29,7 +29,7 @@ struct FSaveState
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<float> mHeights;
+	TArray<float> mHeights;								// It might be usefull to store xyz for spawning modifiers
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString mName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -141,8 +141,12 @@ public:
 public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AActor> FloorPieceActor;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AActor> Gladiator;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<AActor*> FloorPieces;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<AActor*> Enemies;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<float> FloorHeights;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
