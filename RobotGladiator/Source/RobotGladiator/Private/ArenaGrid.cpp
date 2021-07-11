@@ -294,8 +294,9 @@ void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 
 				// Set spawn transform
 				FVector loc = FloorPieces[i]->GetActorLocation();
-				loc.Z += 900.0f;
+				loc.Z = loc.Z + FloorHeights[i] + 1510.0f;	// Find a programmatic way to determine this
 				FRotator rot = this->GetActorRotation();
+				DEBUGMESSAGE("%f", loc.Z)
 
 				// Spawn new enemy
 				AActor* enemy = GetWorld()->SpawnActor<AActor>(Gladiator, loc, rot, spawnParams);
