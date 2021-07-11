@@ -33,7 +33,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString mName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int mModifiers;
+	TArray<int> mModifiers;
 
 	static enum ModifierIDs
 	{
@@ -43,10 +43,9 @@ public:
 		NUM_MODIFIERS
 	};
 
-	FSaveState(TArray<float> in) : mHeights(in)
+	FSaveState(TArray<float> inHeights, TArray<int> inMods) : mHeights(inHeights), mModifiers(inMods)
 	{
 		mName = "";
-		mModifiers = 0;
 	}
 
 	// Sets default values for this actor's properties
@@ -54,7 +53,7 @@ public:
 	{
 		mHeights.AddZeroed();
 		mName = "";
-		mModifiers = 0;
+		mModifiers.AddZeroed();
 	}
 };
 

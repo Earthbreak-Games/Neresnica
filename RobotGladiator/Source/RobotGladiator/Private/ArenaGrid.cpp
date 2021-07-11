@@ -160,8 +160,8 @@ int AArenaGrid::SaveState(int index, bool freshState)
 				FloorHeights[i] = FloorPieces[i]->GetActorLocation().Z;
 		}
 
-	// Store the current float floor heights as a save state
-	tmp = FSaveState(FloorHeights);
+	// Store the current float floor data as a save state
+	tmp = FSaveState(FloorHeights, FloorModifiers);
 
 	// If the index is of a pre-existing save overwrite that save, otherwise create a new one
 	if (SavedStates.IsValidIndex(index))
@@ -339,7 +339,8 @@ void AArenaGrid::CalculateTileModifiers(float chance)
 		}
 
 		// Store the generated modifier in the save state
-		SavedStates[i].mModifiers = StaticCast<int>(modifier);
+		FloorModifiers.Add(modifier);
+		//SavedStates[i].mModifiers = StaticCast<int>(modifier);
 	}
 }
 
