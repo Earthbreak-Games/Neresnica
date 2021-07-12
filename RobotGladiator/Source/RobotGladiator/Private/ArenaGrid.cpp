@@ -374,7 +374,7 @@ void AArenaGrid::CalculateTileModifiers(float chance)
 		if (modifier > chance)
 		{
 			modifier -= chance;
-			modifier = fmod(modifier, ratio) + 1;
+			modifier = StaticCast<int>(modifier / ratio) + 1;
 		}
 		else
 		{
