@@ -305,7 +305,7 @@ void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 
 				// Set spawn location from the floorpeice currently at the location
 				FVector loc = FloorPieces[i]->GetActorLocation();										// Like the other one this needs to be revised to deal with the movement issue
-				loc.Z = loc.Z + FloorHeights[i] + 15.0f;	// Find a programmatic way to determine this
+				loc.Z = FloorHeights[i] + 15.0f;	// Find a programmatic way to determine this
 
 				// Check if actor to spawn is valid
 				if (Topper)
@@ -336,7 +336,7 @@ void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 
 				// Set spawn transform
 				FVector loc = FloorPieces[i]->GetActorLocation();
-				loc.Z = loc.Z + FloorHeights[i] + 1510.0f;	// Find a programmatic way to determine this
+				loc.Z = FloorHeights[i] + 1510.0f;	// Find a programmatic way to determine this
 				FRotator rot = this->GetActorRotation();
 
 				// Check if actor to spawn is valid
