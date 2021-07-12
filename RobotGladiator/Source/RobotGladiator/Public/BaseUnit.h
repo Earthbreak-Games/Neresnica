@@ -13,6 +13,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Net/UnrealNetwork.h"
 #include "BaseUnit.generated.h"
 
 UCLASS()
@@ -68,5 +69,4 @@ public:
 	*    @return {<void>} - <null>
 	*/
 	void DealDamage(ABaseUnit* oposingUnit, float damage);
-	
 };

@@ -10,7 +10,6 @@
  **/
 
 #include "BaseUnit.h"
-#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ABaseUnit::ABaseUnit()
