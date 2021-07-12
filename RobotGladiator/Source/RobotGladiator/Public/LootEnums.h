@@ -41,7 +41,8 @@ enum EWeaponTypes
 	AXE			UMETA(DisplayName = "Axe"),
 	SHIELD		UMETA(DisplayName = "Shield"),
 	SPEAR		UMETA(DisplayName = "Spear"),
-	KNIVES		UMETA(DisplayName = "Knives")
+	KNIVES		UMETA(DisplayName = "Knives"),
+	FIST		UMETA(DisplayName = "Fist")
 };
 
 UENUM(BlueprintType)

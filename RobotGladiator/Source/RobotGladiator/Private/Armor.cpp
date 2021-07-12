@@ -31,6 +31,14 @@ void AArmor::BeginPlay()
 	
 }
 
+void AArmor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	DOREPLIFETIME(AArmor, DefenseStat);
+	DOREPLIFETIME(AArmor, ArmorName);
+	DOREPLIFETIME(AArmor, Rarity);
+	DOREPLIFETIME(AArmor, ArmorType);
+}
+
 void AArmor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

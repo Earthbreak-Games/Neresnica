@@ -42,6 +42,13 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	LockOnSpeed = 400.0f;
 	SprintMultiplier = 1.5f;
 
+	// Set default player stats
+	BaseAttackSpeed = 8.0f;
+	MaxAttackSpeed = 20.0f;
+	mMaxHealth = 100.0f;
+	mHealth = mMaxHealth;
+	BaseDamage = 10.0f;
+
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -57,6 +64,30 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+}
+
+void ARobotGladiatorCharacter::SetBaseDamage(float damage, float modifier /*= 0.0f*/)
+{
+	float bonus = BaseDamage * modifier;
+	BaseDamage += bonus;
+}
+
+void ARobotGladiatorCharacter::SetBaseAttackSpeed(float attackSpeed, float modifier /*= 0.0f*/)
+{
+	float bonus = BaseAttackSpeed * modifier;
+	BaseAttackSpeed += bonus;
+}
+
+void ARobotGladiatorCharacter::SetBaseMovementSpeed(float speed, float modifier /*= 0.0f*/)
+{
+	float bonus = GetCharacterMovement()->MaxWalkSpeed * modifier;
+	GetCharacterMovement()->MaxWalkSpeed += bonus;
+}
+
+void ARobotGladiatorCharacter::SetBaseRegen(float regenRate, float modifier /*= 0.0f*/)
+{
+	float bonus = BaseHealthRegen * modifier;
+	BaseHealthRegen += bonus;
 }
 
 /*

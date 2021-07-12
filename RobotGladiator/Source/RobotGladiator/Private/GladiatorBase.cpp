@@ -19,6 +19,7 @@ AGladiatorBase::AGladiatorBase()
 
 	mTimeLeftOnCoolDown = 6;
 	mIsOnCooldown = true;
+	mHealth = 50.0f;
 }
 
 void AGladiatorBase::BeginPlay()
@@ -32,8 +33,6 @@ void AGladiatorBase::BeginPlay()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
 
 		mpTarget = GetClosestPlayer(foundActors);
-
-
 	}
 }
 
@@ -99,10 +98,6 @@ void AGladiatorBase::Tick(float DeltaTime)
 		FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
 		mDistanceToTarget = dir.Size();
 	}
-
-	
-
-
 	
 	if ( !mIsOnCooldown && !mIsAttacking && mpTarget != nullptr)
 	{
@@ -115,6 +110,8 @@ void AGladiatorBase::Tick(float DeltaTime)
 		}
 		else
 		{
+			//add function to get farthest player from gladiator
+
 			RangedAttack();
 			mTimeLeftOnCoolDown = mRangedCoolDownTime;
 
@@ -134,5 +131,5 @@ void AGladiatorBase::Tick(float DeltaTime)
 	}
 
 
-	UE_LOG(LogTemp, Warning, TEXT("Cooldown: %s"), *(FString::SanitizeFloat(mTimeLeftOnCoolDown)));
+	//UE_LOG(LogTemp, Warning, TEXT("Cooldown: %s"), *(FString::SanitizeFloat(mTimeLeftOnCoolDown)));
 }

@@ -26,6 +26,14 @@ void ABaseUnit::BeginPlay()
 	
 }
 
+void ABaseUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABaseUnit, mHealth);
+	DOREPLIFETIME(ABaseUnit, mMaxHealth);
+}
+
 // Called every frame
 void ABaseUnit::Tick(float DeltaTime)
 {
@@ -44,10 +52,9 @@ void ABaseUnit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
  *    @param {float} damage - damage to be taken
  *    @return {void} null
  */
-void ABaseUnit::TakeDamage(float damage)
+void ABaseUnit::TakeDamage_Unit(float damage)
 {
 	mHealth -= damage;
-
 	if (mHealth <= 0)
 	{
 		Destroy();
@@ -76,6 +83,6 @@ void ABaseUnit::Heal(float hp)
  */
 void ABaseUnit::DealDamage(ABaseUnit* oposingUnit, float damage)
 {
-	oposingUnit->TakeDamage(damage);
+	oposingUnit->TakeDamage_Unit(damage);
 }
 

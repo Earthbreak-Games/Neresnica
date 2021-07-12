@@ -29,6 +29,18 @@ class ARobotGladiatorCharacter : public ABaseUnit
 public:
 	ARobotGladiatorCharacter();
 
+	UFUNCTION(BlueprintCallable)
+	void SetBaseDamage(float damage, float modifier = 0.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseAttackSpeed(float attackSpeed, float modifier = 0.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseMovementSpeed(float speed, float modifier = 0.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseRegen(float regenRate, float modifier = 0.0f);
+
 public:
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -53,6 +65,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SprintMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseAttackSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseHealthRegen;
+
+	UPROPERTY(EditAnywhere, BLueprintReadWrite)
+	float MaxAttackSpeed;
 
 protected:
 
