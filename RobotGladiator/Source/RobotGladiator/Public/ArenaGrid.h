@@ -39,6 +39,7 @@ public:
 	{
 		NONE = 0,
 		TOPPER,
+		GLADIATOR,
 
 		NUM_MODIFIERS
 	};

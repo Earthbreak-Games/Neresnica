@@ -269,6 +269,10 @@ void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, floa
 void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 {
 	// Clear any remaining data from the previous level
+	for (AActor* iter : Enemies)
+	{
+		iter->Destroy();
+	}
 	Enemies.Empty();
 	FloorHeights.Empty();
 
@@ -285,7 +289,7 @@ void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 		// Spawn saved enemies
 		for (int i = 0; i < tmp.mModifiers.Num(); i++)
 		{
-			if (tmp.mModifiers[i] != 0)						// TEMPORARY SOLUTION FOR ALPHA THIS WILL BE (better be) CHANGED
+			if (tmp.mModifiers[i] == ModifierIDs::GLADIATOR)
 			{
 				// Init spawn parameters
 				FActorSpawnParameters spawnParams;
@@ -304,10 +308,6 @@ void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 				// Child new enemy to the grid object
 				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
 				enemy->AttachToActor(this, attachRules);
-
-				// Set the correct rotation of the floor piece
-				rot = FRotator(0.0f, 30.0f, 0.0f);
-				enemy->AddActorLocalRotation(rot);
 
 				// Add the enemy to the array
 				Enemies.Add(enemy);
