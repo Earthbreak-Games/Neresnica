@@ -13,6 +13,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Net/UnrealNetwork.h"
 #include "BaseUnit.generated.h"
 
 UCLASS()
@@ -25,16 +26,18 @@ public:
 	ABaseUnit();
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 		float mHealth;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 		float mMaxHealth;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
 public:	
 	// Called every frame
@@ -49,7 +52,8 @@ public:
 	*    @param {float} damage - damage to be taken
 	*    @return {void} null
 	*/
-	void TakeDamage(float damage);
+	void TakeDamage_Unit(float damage);
+
 
 	UFUNCTION(BlueprintCallable)
 	/**   @brief <heal>
@@ -65,5 +69,4 @@ public:
 	*    @return {<void>} - <null>
 	*/
 	void DealDamage(ABaseUnit* oposingUnit, float damage);
-	
 };

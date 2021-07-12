@@ -10,7 +10,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Public/BaseUnit.h"
+#include "BaseUnit.h"
 #include "RobotGladiatorCharacter.generated.h"
 
 
@@ -28,6 +28,18 @@ class ARobotGladiatorCharacter : public ABaseUnit
 	class UCameraComponent* FollowCamera;
 public:
 	ARobotGladiatorCharacter();
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseDamage(float damage, float modifier = 0.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseAttackSpeed(float attackSpeed, float modifier = 0.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseMovementSpeed(float speed, float modifier = 0.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseRegen(float regenRate, float modifier = 0.0f);
 
 public:
 
@@ -53,6 +65,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SprintMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseAttackSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseHealthRegen;
+
+	UPROPERTY(EditAnywhere, BLueprintReadWrite)
+	float MaxAttackSpeed;
 
 protected:
 
