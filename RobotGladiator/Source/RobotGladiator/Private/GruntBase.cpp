@@ -2,7 +2,8 @@
 
 
 #include "GruntBase.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "Misc/OutputDevice.h"
 
 AGruntBase::AGruntBase()
 {
@@ -10,6 +11,39 @@ AGruntBase::AGruntBase()
 
 	mTimeLeftOnMeleeCoolDown = 2.0;
 	mHealth = 10.0f;
+}
+
+
+void AGruntBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (mpTarget == nullptr)
+	{
+		TArray<AActor*> foundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
+
+		mpTarget = GetClosestPlayer(foundActors);
+	}
+}
+
+void AGruntBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	TArray<AActor*> foundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
+	AActor* target = GetClosestPlayer(foundActors);
+
+	if (mpTarget == nullptr || (mpTarget != nullptr && target != mpTarget))
+	{
+		mpTarget = target;
+	}
+	else if (mpTarget != nullptr)
+	{
+		FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
+		mDistanceToTarget = dir.Size();
+	}
 }
 
 AActor* AGruntBase::GetClosestPlayer(TArray<AActor*> Array)
@@ -37,10 +71,10 @@ AActor* AGruntBase::GetClosestPlayer(TArray<AActor*> Array)
 				{
 					closestPlayer = actor;
 					distance = dir.Size();
+					mDistanceToTarget = distance;
 				}
 			}
 		}
 	}
-
 	return closestPlayer;
 }
