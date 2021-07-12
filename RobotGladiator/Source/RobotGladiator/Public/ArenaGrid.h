@@ -140,17 +140,21 @@ public:
 	void LoadSaveState(UPARAM(ref) int&index, float scale);
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> FloorPieceActor;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> Gladiator;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> Topper;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<AActor*> FloorPieces;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<AActor*> Enemies;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
+	TArray<AActor*> Toppers;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<float> FloorHeights;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<int> FloorModifiers;
 	TArray<HexCell> Cells;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
