@@ -38,7 +38,9 @@ public:
 	static enum ModifierIDs
 	{
 		NONE = 0,
-		TOPPER,
+		HEAL_TOPPER,
+		TOXIC_TOPPER,
+		JUMP_TOPPER,
 		GLADIATOR,
 
 		NUM_MODIFIERS
@@ -145,7 +147,11 @@ public:
 	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> Gladiator;
 	UPROPERTY(EditAnywhere,Category=Actors)
-	TSubclassOf<class AActor> Topper;
+	TSubclassOf<class AActor> healTopper;
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> jumpTopper;
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> toxicTopper;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<AActor*> FloorPieces;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
