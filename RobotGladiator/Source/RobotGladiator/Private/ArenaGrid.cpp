@@ -269,7 +269,16 @@ void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, floa
 void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 {
 	// Clear any remaining data from the previous level
+	for (AActor* iter : Enemies)
+	{
+		iter->Destroy();
+	}
+	for (AActor* iter : Toppers)
+	{
+		iter->Destroy();
+	}
 	Enemies.Empty();
+	Toppers.Empty();
 	FloorHeights.Empty();
 
 	// Load the next saved state if one exists, if not generate a new arena
@@ -282,10 +291,43 @@ void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 		// Load tile heights									// TODO: random selection
 		FloorHeights = tmp.mHeights;
 
-		// Spawn saved enemies
+		// Act on saved modifiers
 		for (int i = 0; i < tmp.mModifiers.Num(); i++)
 		{
-			if (tmp.mModifiers[i] != 0)						// TEMPORARY SOLUTION FOR ALPHA THIS WILL BE (better be) CHANGED
+			switch (tmp.mModifiers[i])
+			{
+			case ModifierIDs::TOPPER:		// Spawn Toppers
+			{
+				// Init spawn parameters
+				FActorSpawnParameters spawnParams;
+				spawnParams.Owner = this;
+				spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				// Set spawn location from the floorpeice currently at the location
+				FVector loc = FloorPieces[i]->GetActorLocation();										// Like the other one this needs to be revised to deal with the movement issue
+				loc.Z = FloorHeights[i] + 15.0f;	// Find a programmatic way to determine this
+
+				// Check if actor to spawn is valid
+				if (Topper)
+				{
+					// Spawn new tile
+					FRotator rot = this->GetActorRotation();
+					AActor* topper = GetWorld()->SpawnActor<AActor>(FloorPieceActor, loc, rot, spawnParams);
+
+					// Child new floor piece to the grid object
+					FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+					topper->AttachToActor(this, attachRules);
+
+					// Set the correct rotation of the floor piece
+					rot = FRotator(0.0f, 30.0f, 0.0f);
+					topper->AddActorLocalRotation(rot);
+
+					// Add the floor piece to floor piece array
+					Toppers.Add(topper);
+				}
+				break;
+			}
+			case ModifierIDs::GLADIATOR:	// Spawn gladiators
 			{
 				// Init spawn parameters
 				FActorSpawnParameters spawnParams;
@@ -294,24 +336,27 @@ void AArenaGrid::LoadSaveState(UPARAM(ref) int&index, float scale)
 
 				// Set spawn transform
 				FVector loc = FloorPieces[i]->GetActorLocation();
-				loc.Z = loc.Z + FloorHeights[i] + 1510.0f;	// Find a programmatic way to determine this
+				loc.Z = FloorHeights[i] + 1510.0f;	// Find a programmatic way to determine this
 				FRotator rot = this->GetActorRotation();
-				DEBUGMESSAGE("%f", loc.Z)
 
-				// Spawn new enemy
-				AActor* enemy = GetWorld()->SpawnActor<AActor>(Gladiator, loc, rot, spawnParams);
+				// Check if actor to spawn is valid
+				if (Gladiator)
+				{
+					// Spawn new enemy
+					AActor* enemy = GetWorld()->SpawnActor<AActor>(Gladiator, loc, rot, spawnParams);
 
-				// Child new enemy to the grid object
-				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
-				enemy->AttachToActor(this, attachRules);
+					// Child new enemy to the grid object
+					FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+					enemy->AttachToActor(this, attachRules);
 
-				// Set the correct rotation of the floor piece
-				rot = FRotator(0.0f, 30.0f, 0.0f);
-				enemy->AddActorLocalRotation(rot);
-
-				// Add the enemy to the array
-				Enemies.Add(enemy);
+					// Add the enemy to the array
+					Enemies.Add(enemy);
+				}
+				break;
 			}
+			default:
+				break;
+			}			
 		}
 
 		index++;
@@ -374,7 +419,7 @@ void AArenaGrid::CalculateTileModifiers(float chance)
 		if (modifier > chance)
 		{
 			modifier -= chance;
-			modifier = fmod(modifier, ratio) + 1;
+			modifier = StaticCast<int>(modifier / ratio) + 1;
 		}
 		else
 		{
