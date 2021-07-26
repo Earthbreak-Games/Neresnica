@@ -36,6 +36,7 @@ void AGruntBase::Tick(float DeltaTime)
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
 	AActor* target = GetClosestPlayer(foundActors);
 
+	//Get Nearest Target and Set it
 	if (mpTarget == nullptr || (mpTarget != nullptr && target != mpTarget))
 	{
 		mpTarget = target;
@@ -46,9 +47,9 @@ void AGruntBase::Tick(float DeltaTime)
 		mDistanceToTarget = dir.Size();
 	}
 
+	//Handle Attacking for Grunt
 	if (!mIsAttacking && mpTarget != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Attacking"));
 		if (mDistanceToTarget <= mMeleeRange)
 		{
 			MeleeAttack();
@@ -57,6 +58,7 @@ void AGruntBase::Tick(float DeltaTime)
 	}
 }
 
+//Used Fosters Code for getting closest player
 AActor* AGruntBase::GetClosestPlayer(TArray<AActor*> Array)
 {
 	AActor* closestPlayer = nullptr; 
