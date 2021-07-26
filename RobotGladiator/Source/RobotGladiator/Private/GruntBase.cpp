@@ -8,9 +8,10 @@
 AGruntBase::AGruntBase()
 {
 	SetActorTickEnabled(true);
-
-	mTimeLeftOnMeleeCoolDown = 2.0;
 	mHealth = 10.0f;
+	mIsAttacking = false;
+	mMeleeRange = 0.0f;
+	mDistanceToTarget = 9999;
 }
 
 
@@ -44,11 +45,21 @@ void AGruntBase::Tick(float DeltaTime)
 		FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
 		mDistanceToTarget = dir.Size();
 	}
+
+	if (!mIsAttacking && mpTarget != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Attacking"));
+		if (mDistanceToTarget <= mMeleeRange)
+		{
+			MeleeAttack();
+			mIsAttacking = true;
+		}
+	}
 }
 
 AActor* AGruntBase::GetClosestPlayer(TArray<AActor*> Array)
 {
-	AActor* closestPlayer = nullptr;
+	AActor* closestPlayer = nullptr; 
 	float distance = INT_MAX;
 
 

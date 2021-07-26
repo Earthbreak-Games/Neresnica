@@ -11,7 +11,7 @@ GruntBase.h
 Purpose: base class for the grunts
 Dependencies: APawn.h/cpp  
 Primary Author: Aidan Murphy
-References: Foster code for getting nearest unit
+References: Foster code for getting nearest unit, and movement in order to make sure that jumping will function properly
 */
 
 UCLASS()
@@ -52,8 +52,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float mMeleeCoolDown;
-
-	float mTimeLeftOnMeleeCoolDown;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool mIsAttacking;
