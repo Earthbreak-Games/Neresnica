@@ -83,6 +83,7 @@ void ABaseUnit::Heal(float hp)
  */
 void ABaseUnit::DealDamage(ABaseUnit* oposingUnit, float damage)
 {
-	oposingUnit->TakeDamage_Unit(damage);
+	if(oposingUnit)
+		oposingUnit->TakeDamage_Unit(damage);
 }
 
