@@ -38,7 +38,9 @@ public:
 	static enum ModifierIDs
 	{
 		NONE = 0,
-		TOPPER,
+		HEAL_TOPPER,
+		TOXIC_TOPPER,
+		JUMP_TOPPER,
 		GLADIATOR,
 
 		NUM_MODIFIERS
@@ -137,7 +139,18 @@ public:
 	 *  @param {int} index - The number of the current arena state
 	 *  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
 	 */
-	void LoadSaveState(UPARAM(ref) int&index, float scale);
+	FSaveState LoadSaveStateData(UPARAM(ref) int&index, float scale);
+
+	UFUNCTION(BlueprintCallable)
+	/** @brief Spawns modifiers during gameplay
+	 *  @param {FSaveState} cur - The saved state to load modifier data from
+	 */
+	void LoadModifiers(UPARAM(ref) FSaveState cur);
+
+	UFUNCTION(BlueprintCallable)
+	/** @brief Empties the modifier actor arrays, cleaning up the board
+	 */
+	void ClearTheBoard();
 
 public:
 	UPROPERTY(EditAnywhere,Category=Actors)
@@ -145,7 +158,11 @@ public:
 	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> Gladiator;
 	UPROPERTY(EditAnywhere,Category=Actors)
-	TSubclassOf<class AActor> Topper;
+	TSubclassOf<class AActor> healTopper;
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> jumpTopper;
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> toxicTopper;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<AActor*> FloorPieces;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
