@@ -268,18 +268,8 @@ void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, floa
 
 FSaveState AArenaGrid::LoadSaveStateData(UPARAM(ref) int&index, float scale)
 {
-	// Clear any remaining data from the previous level
-	for (AActor* iter : Enemies)
-	{
-		iter->Destroy();
-	}
-	for (AActor* iter : Toppers)
-	{
-		iter->Destroy();
-	}
-	Enemies.Empty();
-	Toppers.Empty();
-	FloorHeights.Empty();
+	// Clear any remaining modifiers on the board
+	ClearTheBoard();
 
 	FSaveState result;
 
@@ -439,6 +429,22 @@ void AArenaGrid::LoadModifiers(UPARAM(ref) FSaveState cur)
 			break;
 		}
 	}
+}
+
+void AArenaGrid::ClearTheBoard()
+{
+	// Clear any remaining data from the previous level
+	for (AActor* iter : Enemies)
+	{
+		iter->Destroy();
+	}
+	for (AActor* iter : Toppers)
+	{
+		iter->Destroy();
+	}
+	Enemies.Empty();
+	Toppers.Empty();
+	FloorHeights.Empty();
 }
 
 // Called when the game starts or when spawned
