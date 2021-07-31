@@ -30,6 +30,16 @@ void AWeapon::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AWeapon, BaseDamage);
+	DOREPLIFETIME(AWeapon, Rarity);
+	DOREPLIFETIME(AWeapon, WeaponType);
+	DOREPLIFETIME(AWeapon, WeaponName);
+}
+
 void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

@@ -18,17 +18,35 @@
 #include "Math/UnrealMathUtility.h"
 #include "ArenaGrid.generated.h"
 
+#define DEBUGMESSAGE(x, ...) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT(x), __VA_ARGS__));}
+
 USTRUCT(BlueprintType)
+/** @brief A struct encompassing the data saved for each hex cell
+ */
 struct FSaveState
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<float> mHeights;
+	TArray<float> mHeights;								// It might be usefull to store xyz for spawning modifiers
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString mName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int> mModifiers;
 
-	FSaveState(TArray<float> in) : mHeights(in)
+	static enum ModifierIDs
+	{
+		NONE = 0,
+		HEAL_TOPPER,
+		TOXIC_TOPPER,
+		JUMP_TOPPER,
+		GLADIATOR,
+
+		NUM_MODIFIERS
+	};
+
+	FSaveState(TArray<float> inHeights, TArray<int> inMods) : mHeights(inHeights), mModifiers(inMods)
 	{
 		mName = "";
 	}
@@ -38,6 +56,7 @@ struct FSaveState
 	{
 		mHeights.AddZeroed();
 		mName = "";
+		mModifiers.AddZeroed();
 	}
 };
 
@@ -93,9 +112,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Calls the calculate tile positions protected function in order to randomize heights
-	*  @param {float} scale - A float scale factor for the Perlin noise sample
+	*  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
 	*/
-	void GenerateHeights(float scale = 1.0f);
+	void GenerateArena(float chance, float scale = 1.0f);
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Erases the save state stored at the given index
@@ -104,23 +123,56 @@ public:
 	void EraseHeightState(int index);
 
 	UFUNCTION(BlueprintCallable)
-	/** @brief Loads the save state stored at the given index. If there is an invalid index loads the
-	 *		default arena map.
+	/** @brief Loads the save state stored at the given index in the arena editor.
+	 *		If there is an invalid index loads the default arena map.
 	 *	This is effectively SpawnFloor but with stored level data rather than defaults
 	 *  @param {int} index - The index of the saved state to load
 	 *  @param {FVector} origin - Origin point of the grid (aka the center of the grid)
 	 *  @param {int} radius - The radius of the grid
 	 *  @param {float} padding - The amount of padding between each cell in the grid
 	 */
-	void LoadSaveState(int index, FVector origin, int radius, float padding);
+	void EditorLoadSaveState(int index, FVector origin, int radius, float padding);
+
+	UFUNCTION(BlueprintCallable)
+	/** @brief Loads the next level during gameplay. Loads from the saved state if any remain,
+	 *		if not generates a new level from scratch.
+	 *  @param {int} index - The number of the current arena state
+	 *  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
+	 */
+	FSaveState LoadSaveStateData(UPARAM(ref) int&index, float scale);
+
+	UFUNCTION(BlueprintCallable)
+	/** @brief Spawns modifiers during gameplay
+	 *  @param {FSaveState} cur - The saved state to load modifier data from
+	 */
+	void LoadModifiers(UPARAM(ref) FSaveState cur);
+
+	UFUNCTION(BlueprintCallable)
+	/** @brief Empties the modifier actor arrays, cleaning up the board
+	 */
+	void ClearTheBoard();
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> FloorPieceActor;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> Gladiator;
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> healTopper;
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> jumpTopper;
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> toxicTopper;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<AActor*> FloorPieces;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
+	TArray<AActor*> Enemies;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
+	TArray<AActor*> Toppers;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<float> FloorHeights;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
+	TArray<int> FloorModifiers;
 	TArray<HexCell> Cells;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FSaveState> SavedStates;
@@ -140,6 +192,11 @@ protected:
 	/** @brief Calculates the position of each tile using simplex noise
 	 */
 	void CalculateTilePositions(float scale = 1.0f);
+
+	/** @brief Calculates the modifiers on each tile
+	 *	@param {float} chance - The probability that a given tile will not have a modifier, as a percentage out of 100
+	 */
+	void CalculateTileModifiers(float chance);
 
 	/** @brief Calculates a ring around a tile with a given radius
 	 *  @param {HexCell} center - The center tile of the ring

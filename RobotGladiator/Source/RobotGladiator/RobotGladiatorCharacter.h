@@ -10,10 +10,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "BaseUnit.h"
 #include "RobotGladiatorCharacter.generated.h"
 
+
 UCLASS(config=Game)
-class ARobotGladiatorCharacter : public ACharacter
+class ARobotGladiatorCharacter : public ABaseUnit
 {
 	GENERATED_BODY()
 
@@ -26,6 +28,20 @@ class ARobotGladiatorCharacter : public ACharacter
 	class UCameraComponent* FollowCamera;
 public:
 	ARobotGladiatorCharacter();
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseDamage(float damage, float modifier = 0.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseAttackSpeed(float attackSpeed, float modifier = 0.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseMovementSpeed(float speed, float modifier = 0.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetBaseRegen(float regenRate, float modifier = 0.0f);
+
+public:
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -49,6 +65,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SprintMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseAttackSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseHealthRegen;
+
+	UPROPERTY(EditAnywhere, BLueprintReadWrite)
+	float MaxAttackSpeed;
 
 protected:
 

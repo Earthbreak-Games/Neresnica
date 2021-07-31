@@ -11,6 +11,8 @@
 
 #include "ArenaGrid.h"
 
+#define ModifierIDs FSaveState::ModifierIDs
+
 // Sets default values
 AArenaGrid::AArenaGrid()
 {
@@ -158,8 +160,8 @@ int AArenaGrid::SaveState(int index, bool freshState)
 				FloorHeights[i] = FloorPieces[i]->GetActorLocation().Z;
 		}
 
-	// Store the current float floor heights as a save state
-	tmp = FSaveState(FloorHeights);
+	// Store the current float floor data as a save state
+	tmp = FSaveState(FloorHeights, FloorModifiers);
 
 	// If the index is of a pre-existing save overwrite that save, otherwise create a new one
 	if (SavedStates.IsValidIndex(index))
@@ -175,9 +177,11 @@ int AArenaGrid::SaveState(int index, bool freshState)
 	return result;
 }
 
-void AArenaGrid::GenerateHeights(float scale)
+void AArenaGrid::GenerateArena(float chance, float scale)
 {
+	scale *= 0.001;
 	CalculateTilePositions(scale);
+	CalculateTileModifiers(chance);
 }
 
 void AArenaGrid::EraseHeightState(int index)
@@ -188,7 +192,7 @@ void AArenaGrid::EraseHeightState(int index)
 	}
 }
 
-void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padding)
+void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, float padding)
 {
 	if (SavedStates.IsValidIndex(index))
 	{
@@ -262,6 +266,188 @@ void AArenaGrid::LoadSaveState(int index, FVector origin, int radius, float padd
 	}
 }
 
+FSaveState AArenaGrid::LoadSaveStateData(UPARAM(ref) int&index, float scale)
+{
+	// Clear any remaining modifiers on the board
+	ClearTheBoard();
+
+	FSaveState result;
+
+	// Load the next saved state if one exists, if not generate a new arena
+	if (SavedStates.IsValidIndex(index))
+	{
+		// Get a reference to the saved state for easy access/readability
+		DEBUGMESSAGE("Loading Saved State %i", index);
+		FSaveState tmp = SavedStates[index];
+
+		// Load tile heights									// TODO: random selection
+		FloorHeights = tmp.mHeights;
+
+		index++;
+		result = tmp;
+	}
+	else
+	{
+		DEBUGMESSAGE("Generating new arena")
+		GenerateArena(scale);
+		index++;
+
+		result = FSaveState(FloorHeights, FloorModifiers);
+	}
+
+	return result;
+}
+
+void AArenaGrid::LoadModifiers(UPARAM(ref) FSaveState cur)
+{
+	// Act on saved modifiers
+	for (int i = 0; i < cur.mModifiers.Num(); i++)
+	{
+		switch (cur.mModifiers[i])
+		{
+		case ModifierIDs::HEAL_TOPPER:		// Spawn Healing topper
+		{
+			// Init spawn parameters
+			FActorSpawnParameters spawnParams;
+			spawnParams.Owner = this;
+			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			// Set spawn location from the floorpeice currently at the location
+			FVector loc = FloorPieces[i]->GetActorLocation();										// Like the other one this needs to be revised to deal with the movement issue
+			loc.Z = FloorHeights[i] + 1500.0f;	// Find a programmatic way to determine this
+
+			// Check if actor to spawn is valid
+			if (healTopper)
+			{
+				// Spawn new tile
+				FRotator rot = this->GetActorRotation();
+				AActor* topper = GetWorld()->SpawnActor<AActor>(healTopper, loc, rot, spawnParams);
+
+				// Child new floor piece to the grid object
+				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+				topper->AttachToActor(this, attachRules);
+
+				// Set the correct rotation of the floor piece
+				rot = FRotator(0.0f, 30.0f, 0.0f);
+				topper->AddActorLocalRotation(rot);
+
+				// Add the floor piece to floor piece array
+				Toppers.Add(topper);
+			}
+			break;
+		}
+		case ModifierIDs::JUMP_TOPPER:		// Spawn Jump topper
+		{
+			// Init spawn parameters
+			FActorSpawnParameters spawnParams;
+			spawnParams.Owner = this;
+			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			// Set spawn location from the floorpeice currently at the location
+			FVector loc = FloorPieces[i]->GetActorLocation();										// Like the other one this needs to be revised to deal with the movement issue
+			loc.Z = FloorHeights[i] + 1500.0f;	// Find a programmatic way to determine this
+
+			// Check if actor to spawn is valid
+			if (jumpTopper)
+			{
+				// Spawn new tile
+				FRotator rot = this->GetActorRotation();
+				AActor* topper = GetWorld()->SpawnActor<AActor>(jumpTopper, loc, rot, spawnParams);
+
+				// Child new floor piece to the grid object
+				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+				topper->AttachToActor(this, attachRules);
+
+				// Set the correct rotation of the floor piece
+				rot = FRotator(0.0f, 30.0f, 0.0f);
+				topper->AddActorLocalRotation(rot);
+
+				// Add the floor piece to floor piece array
+				Toppers.Add(topper);
+			}
+			break;
+		}
+		case ModifierIDs::TOXIC_TOPPER:		// Spawn Toxic topper
+		{
+			// Init spawn parameters
+			FActorSpawnParameters spawnParams;
+			spawnParams.Owner = this;
+			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			// Set spawn location from the floorpeice currently at the location
+			FVector loc = FloorPieces[i]->GetActorLocation();										// Like the other one this needs to be revised to deal with the movement issue
+			loc.Z = FloorHeights[i] + 1500.0f;	// Find a programmatic way to determine this
+
+			// Check if actor to spawn is valid
+			if (toxicTopper)
+			{
+				// Spawn new tile
+				FRotator rot = this->GetActorRotation();
+				AActor* topper = GetWorld()->SpawnActor<AActor>(toxicTopper, loc, rot, spawnParams);
+
+				// Child new floor piece to the grid object
+				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+				topper->AttachToActor(this, attachRules);
+
+				// Set the correct rotation of the floor piece
+				rot = FRotator(0.0f, 30.0f, 0.0f);
+				topper->AddActorLocalRotation(rot);
+
+				// Add the floor piece to floor piece array
+				Toppers.Add(topper);
+			}
+			break;
+		}
+		case ModifierIDs::GLADIATOR:	// Spawn gladiators
+		{
+			// Init spawn parameters
+			FActorSpawnParameters spawnParams;
+			spawnParams.Owner = this;
+			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+			// Set spawn transform
+			FVector loc = FloorPieces[i]->GetActorLocation();
+			loc.Z = FloorHeights[i] + 1510.0f;	// Find a programmatic way to determine this
+			FRotator rot = this->GetActorRotation();
+
+			// Check if actor to spawn is valid
+			if (Gladiator)
+			{
+				// Spawn new enemy
+				AActor* enemy = GetWorld()->SpawnActor<AActor>(Gladiator, loc, rot, spawnParams);
+
+				// Child new enemy to the grid object
+				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+				enemy->AttachToActor(this, attachRules);
+
+				// Add the enemy to the array
+				Enemies.Add(enemy);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+	}
+}
+
+void AArenaGrid::ClearTheBoard()
+{
+	// Clear any remaining data from the previous level
+	for (AActor* iter : Enemies)
+	{
+		if(IsValid(iter))
+			iter->Destroy();
+	}
+	for (AActor* iter : Toppers)
+	{
+		iter->Destroy();
+	}
+	Enemies.Empty();
+	Toppers.Empty();
+	FloorHeights.Empty();
+}
+
 // Called when the game starts or when spawned
 void AArenaGrid::BeginPlay()
 {
@@ -294,6 +480,33 @@ void AArenaGrid::CalculateTilePositions(float scale)
 
 		// Add the new height to the array
  		FloorHeights.Add(height);
+	}
+}
+
+void AArenaGrid::CalculateTileModifiers(float chance)
+{
+	// Clear previous modifiers and split remaining percentage into each modifier
+	FloorModifiers.Empty();
+	float ratio = (100.0f - chance) / (ModifierIDs::NUM_MODIFIERS - 1);
+
+	// Generate new modifiers for each hex cell
+	float modifier;
+	for (int i = 0; i < FloorPieces.Num(); i++)
+	{
+		// Generate a random number from 0 to 100 and set the modifier
+		modifier = mRand.FRandRange(0.0f, 100.0f);
+		if (modifier > chance)
+		{
+			modifier -= chance;
+			modifier = StaticCast<int>(modifier / ratio) + 1;
+		}
+		else
+		{
+			modifier = ModifierIDs::NONE;
+		}
+
+		// Store the generated modifier in the save state
+		FloorModifiers.Add(modifier);
 	}
 }
 
