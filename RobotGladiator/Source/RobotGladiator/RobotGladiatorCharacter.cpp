@@ -231,6 +231,8 @@ void ARobotGladiatorCharacter::MoveRight(float Value)
 		{
 			// Use follow camera rotation
 			Rotation = FollowCamera->GetComponentRotation();
+
+			SetActorRotation(FRotator(0, Rotation.Yaw, 0), ETeleportType::None);
 			// Adjust player speed
 			GetCharacterMovement()->MaxWalkSpeed = LockOnSpeed;
 		}
