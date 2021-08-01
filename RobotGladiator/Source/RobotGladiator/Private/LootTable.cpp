@@ -14,10 +14,10 @@ ULootTable::ULootTable()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	CommonPercentage = 40.0f;
+	CommonPercentage = 65.0f;
 	RarePercentage = 30.0f;
-	LegendaryPercentage = 20.0f;
-	EpicPercentage = 10.0f;
+	LegendaryPercentage = 5.0f;
+	EpicPercentage = 0.0f;
 }
 
 void ULootTable::BeginPlay()
@@ -38,8 +38,8 @@ ERarities ULootTable::ChooseRarity(float modifier = 0.0f)
 		return RARE;
 	else if(randPercent <= (LegendaryPercentage + RarePercentage + CommonPercentage) - modifier)
 		return LEGENDARY;
-	else if (randPercent <= (EpicPercentage + LegendaryPercentage + RarePercentage + CommonPercentage) - modifier)
-		return EPIC;
+	//else if (randPercent <= (EpicPercentage + LegendaryPercentage + RarePercentage + CommonPercentage) - modifier)
+		//return EPIC;
 
 	return COMMON;
 }
@@ -54,10 +54,12 @@ ELootTypes ULootTable::ChooseItemType(EEnemyTypes enemyType, float modifier = 0.
 		randPercent = FMath::Floor(randPercent);
 
 		// Choose item
-		if(randPercent <= 70.0f - modifier)
+		if(randPercent <= 60.0f - modifier)
+			return NONE;
+		if(randPercent <= 90.0f - modifier)
 			return HEALTH;
 		else if(randPercent <= 100.0f - modifier)
-			return ARMOR;
+			return UPGRADE;
 	}
 	// Boss Loot Drops
 	else if (enemyType == BOSS)

@@ -24,7 +24,9 @@ enum ELootTypes
 {
 	HEALTH		UMETA(DisplayName = "Health"),
 	WEAPON		UMETA(DisplayName = "Weapon"),
-	ARMOR		UMETA(DisplayName = "Armor")
+	UPGRADE		UMETA(DisplayName = "Upgrade"),
+	ARMOR		UMETA(DisplayName = "Armor"),
+	NONE		UMETA(DisplayName = "None")
 };
 
 UENUM(BlueprintType)
@@ -39,10 +41,17 @@ enum EWeaponTypes
 {
 	SWORD		UMETA(DisplayName = "Sword"),
 	AXE			UMETA(DisplayName = "Axe"),
-	SHIELD		UMETA(DisplayName = "Shield"),
-	SPEAR		UMETA(DisplayName = "Spear"),
-	KNIVES		UMETA(DisplayName = "Knives"),
 	FIST		UMETA(DisplayName = "Fist")
+};
+
+UENUM(BlueprintType)
+enum EUpgradeStatType
+{
+	SPEED		UMETA(DisplayName = "Speed"),
+	JUMP		UMETA(DisplayName = "Jump"),
+	ATTACKSPEED UMETA(DisplayName = "AttackSpeed"),
+	DAMAGE		UMETA(DisplayName = "Damage"),
+	HEAL		UMETA(DisplayName = "Heal")
 };
 
 UENUM(BlueprintType)
