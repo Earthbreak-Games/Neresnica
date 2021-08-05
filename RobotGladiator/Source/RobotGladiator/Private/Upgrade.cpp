@@ -9,6 +9,7 @@ AUpgrade::AUpgrade()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Upgrade Mesh"));
 }
 
 void AUpgrade::SetUpgradeStats(int statIncrease, ERarities rarity, EUpgradeStatType stat)
