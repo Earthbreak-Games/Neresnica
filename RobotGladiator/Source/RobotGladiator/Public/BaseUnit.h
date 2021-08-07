@@ -64,6 +64,14 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	/**   @brief <heal>
+	*    @param {<ABaseUnit*>} oposingUnit - <unit to heal>
+	*    @param {<float>} healAmount - health
+	*    @return {<void>} null
+	*/
+	void HealUnit(ABaseUnit* oposingUnit, float healAmount);
+
+	UFUNCTION(BlueprintCallable)
+	/**   @brief <heal>
 	*	  @param {ABaseUnit*} oposingUnit - <unit to take damage>
 	*    @param {<float>} damage - damage>
 	*    @return {<void>} - <null>

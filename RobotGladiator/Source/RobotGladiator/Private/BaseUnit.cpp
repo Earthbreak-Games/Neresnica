@@ -76,6 +76,12 @@ void ABaseUnit::Heal(float hp)
 	}
 }
 
+void ABaseUnit::HealUnit(ABaseUnit* oposingUnit, float healAmount)
+{
+	if(oposingUnit)
+		oposingUnit->Heal(healAmount);
+}
+
 /**   @brief <heal>
  *	  @param {ABaseUnit*} oposingUnit - <unit to take damage>
  *    @param {<float>} damage - damage>
