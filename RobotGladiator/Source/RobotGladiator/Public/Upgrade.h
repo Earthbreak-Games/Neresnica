@@ -23,7 +23,7 @@ public:
 	 *  @param {ERarities} rarity - Rarity of the weapon
 	 *  @param {EWeaponTypes} type - The weapon type
 	 */
-	void SetUpgradeStats(int statIncrease, ERarities rarity, EUpgradeStatType stat);
+	void SetUpgradeStats(ERarities rarity, EUpgradeStatType stat, EWeaponTypes affectedWeapon, float statIncrease, float stackIncrease);
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -35,7 +35,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	TEnumAsByte<EUpgradeStatType> UpgradeStat;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	TEnumAsByte<EWeaponTypes> AffectedWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	float StatIncrease;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	float StackIncrease;
 
 protected:
 	// Called when the game starts or when spawned

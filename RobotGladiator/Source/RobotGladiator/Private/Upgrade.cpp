@@ -12,11 +12,13 @@ AUpgrade::AUpgrade()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Upgrade Mesh"));
 }
 
-void AUpgrade::SetUpgradeStats(int statIncrease, ERarities rarity, EUpgradeStatType stat)
+void AUpgrade::SetUpgradeStats(ERarities rarity, EUpgradeStatType stat, EWeaponTypes affectedWeapon, float statIncrease, float stackIncrease)
 {
-	StatIncrease = statIncrease;
 	Rarity = rarity;
 	UpgradeStat = stat;
+	AffectedWeapon = affectedWeapon;
+	StatIncrease = statIncrease;
+	StackIncrease = stackIncrease;
 }
 
 // Called when the game starts or when spawned
@@ -32,8 +34,10 @@ void AUpgrade::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 
 	DOREPLIFETIME(AUpgrade, UpgradeName);
 	DOREPLIFETIME(AUpgrade, Rarity);
+	DOREPLIFETIME(AUpgrade, AffectedWeapon);
 	DOREPLIFETIME(AUpgrade, UpgradeStat);
 	DOREPLIFETIME(AUpgrade, StatIncrease);
+	DOREPLIFETIME(AUpgrade, StackIncrease);
 }
 
 // Called every frame
