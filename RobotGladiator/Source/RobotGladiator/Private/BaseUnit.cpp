@@ -76,13 +76,18 @@ void ABaseUnit::Heal(float hp)
 	}
 }
 
+/**   @brief <Heal an oposing unit>
+ *	  @param {ABaseUnit*} oposingUnit - <unit to heal>
+ *    @param {<float>} healAmount - amount to heal>
+ *    @return {<void>} - <null>
+ */
 void ABaseUnit::HealUnit(ABaseUnit* oposingUnit, float healAmount)
 {
 	if(oposingUnit)
 		oposingUnit->Heal(healAmount);
 }
 
-/**   @brief <heal>
+/**   @brief <Deal damage to an oposing unit>
  *	  @param {ABaseUnit*} oposingUnit - <unit to take damage>
  *    @param {<float>} damage - damage>
  *    @return {<void>} - <null>
