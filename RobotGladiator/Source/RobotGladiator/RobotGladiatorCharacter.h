@@ -84,6 +84,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SwordAttackSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SwordDamageMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AxeDamageMultiplier;
+
 protected:
 
 	// Called for forwards/backward input
