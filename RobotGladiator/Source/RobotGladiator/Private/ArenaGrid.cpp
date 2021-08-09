@@ -10,6 +10,11 @@
  **/
 
 #include "ArenaGrid.h"
+#include "DynamicNavLink.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Math/UnrealMathUtility.h"
+
 
 #define ModifierIDs FSaveState::ModifierIDs
 
@@ -121,6 +126,8 @@ void AArenaGrid::InitHexGrid(int radius)
 void AArenaGrid::StartRound()
 {
 	CalculateTilePositions();
+	AddNavLinks();
+	//DisplayLines();
 }
 
 void AArenaGrid::EndRound()
@@ -454,3 +461,132 @@ void AArenaGrid::Tick(float DeltaTime)
 
 }
 
+
+void AArenaGrid::AddNavLinks()
+{
+	TArray<AActor*> links;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADynamicNavLink::StaticClass(), links);
+	links.Empty();
+
+	TArray<AActor*> cells;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ArenaCellClass, cells);								//FIX!!!!!!!!!!!!!!!!!!!!!!
+
+	for (AActor* cell : cells)
+	{
+		
+
+		TArray<AActor*> neighbors = GetNeighbors(cell);
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Vector Length: %i"), neighbors.Num()));
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Starting to place links")));
+
+		for (AActor* neighbor : neighbors)
+		{
+			if (cell->GetActorLocation().Z - neighbor->GetActorLocation().Z > FMath::Abs(MaxHeightDifference))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Spawning link!")));
+				SpawnNavLink(cell, neighbor);
+			}
+		}
+
+	}
+
+
+}
+	
+
+TArray<AActor*> AArenaGrid::GetNeighbors(AActor* cell)
+{
+
+	TArray<AActor*> neighbors;
+
+
+	FVector hexDirs[6] = {};
+
+	for (int i = 0; i < 6; i++)
+	{
+
+		FMath::SinCos(&hexDirs[i].X, &hexDirs[i].Y, ((1.0 + 2.0 * i) / 12.0) * 2.0 * PI);
+		hexDirs[i].Z = 0;
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Vector: %s"), *hexDirs[i].ToString()));
+	}
+
+	TArray<TEnumAsByte<enum EObjectTypeQuery> > objectTypesToFind;
+	objectTypesToFind.Add(EObjectTypeQuery::ObjectTypeQuery2);
+	//ignore self
+	TArray<AActor*> actorsToIgnore;
+	FHitResult outHit;
+
+	FVector start = cell->GetActorLocation() + LineTraceOffset;
+
+	for (int i = 0; i < 6; i++)
+	{
+		UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), start, start + hexDirs[i] * TraceDistance, objectTypesToFind, false, actorsToIgnore, EDrawDebugTrace::Type::ForDuration, outHit, true, FLinearColor::Red, FLinearColor::Yellow, 50);
+		if (outHit.GetActor() != nullptr)
+		{
+			neighbors.Add(outHit.GetActor());
+		}
+		
+	}
+
+	return neighbors;
+}
+
+void AArenaGrid::SpawnNavLink(AActor* cellOne, AActor* cellTwo)
+{
+	FActorSpawnParameters spawnParams;
+	spawnParams.Owner = this;
+	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+
+	//AActor* topper = GetWorld()->SpawnActor<AActor>(FloorPieceActor, loc, rot, spawnParams);
+	ADynamicNavLink* navLink = GetWorld()->SpawnActor<ADynamicNavLink>(ADynamicNavLink::StaticClass(), cellOne->GetActorLocation() + NAvLinkSpawnOffset, cellOne->GetActorRotation(), spawnParams);
+	
+	navLink->PointLinks.Add(FNavigationLink());
+	navLink->PointLinks[0].Right = FVector(0, 0, 0);
+	navLink->PointLinks[0].Left = (cellTwo->GetActorLocation() + NAvLinkSpawnOffset) - (cellOne->GetActorLocation() + NAvLinkSpawnOffset);
+	navLink->PointLinks[0].Direction = ENavLinkDirection::Type::RightToLeft;
+	navLink->SetAndEnableSmartLink();
+
+	navLink->PointLinks.Empty();
+	
+}
+
+void AArenaGrid::DisplayLines()
+{
+	TArray<AActor*> cells;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ArenaCellClass, cells);
+
+	FVector hexDirs[6] = {};
+
+	for (int i = 0; i < 6; i++)
+	{
+		
+		FMath::SinCos(&hexDirs[i].X, &hexDirs[i].Y, ((1.0 + 2.0 * i) / 12.0) * 2.0 * PI);
+		hexDirs[i].Z = 0;
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Vector: %s"), *hexDirs[i].ToString()));
+	}
+
+	for (AActor* cell : cells)
+	{
+
+		TArray<TEnumAsByte<enum EObjectTypeQuery> > objectTypesToFind;
+		objectTypesToFind.Add(EObjectTypeQuery::ObjectTypeQuery1);
+		//ignore self
+		TArray<AActor*> actorsToIgnore;
+		FHitResult outHit;
+
+		FVector start = cell->GetActorLocation() + LineTraceOffset;
+
+		for (int i = 0; i < 6; i++)
+		{
+			UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), start, start + hexDirs[i] * TraceDistance, objectTypesToFind, false, actorsToIgnore, EDrawDebugTrace::Type::ForDuration, outHit, true, FLinearColor::Red, FLinearColor::Yellow, 50);
+			
+		}
+
+	}
+	
+}

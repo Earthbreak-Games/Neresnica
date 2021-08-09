@@ -139,6 +139,15 @@ public:
 	 */
 	void LoadSaveState(UPARAM(ref) int&index, float scale);
 
+	UFUNCTION(BlueprintCallable)
+	/** @brief Loads the next level during gameplay. Loads from the saved state if any remain,
+	*		if not generates a new level from scratch.
+	*  @param {int} index - The number of the current arena state
+	*  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
+	*/
+	void AddNavLinks();
+
+
 public:
 	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> FloorPieceActor;
@@ -169,6 +178,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHeight;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector LineTraceOffset;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector NAvLinkSpawnOffset;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int TraceDistance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaxHeightDifference;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<AActor> ArenaCellClass;
+	
+
+
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -187,6 +213,10 @@ protected:
 	 *  @references See https://www.redblobgames.com/grids/hexagons/ (Rings Section) for more info
 	 */
 	void CalculateRing(HexCell center, int radius);
+
+	TArray<AActor*> GetNeighbors(AActor* cell);
+	void SpawnNavLink(AActor* cellOne, AActor* cellTwo);
+	void DisplayLines();
 
 public:	
 	// Called every frame
