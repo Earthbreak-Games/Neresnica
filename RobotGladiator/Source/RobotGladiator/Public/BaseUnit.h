@@ -50,9 +50,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	/**   @brief Take damage and decrement mHealth
 	*    @param {float} damage - damage to be taken
-	*    @return {void} null
+	*    @return {bool} Returns true if unit was destroyed
 	*/
-	void TakeDamage_Unit(float damage);
+	bool TakeDamage_Unit(float damage);
 
 
 	UFUNCTION(BlueprintCallable)
@@ -71,10 +71,10 @@ public:
 	void HealUnit(ABaseUnit* oposingUnit, float healAmount);
 
 	UFUNCTION(BlueprintCallable)
-	/**   @brief <heal>
+	/**   @brief <Deal damage to an oposing unit>
 	*	  @param {ABaseUnit*} oposingUnit - <unit to take damage>
 	*    @param {<float>} damage - damage>
-	*    @return {<void>} - <null>
+	*    @return {<bool>} - <Returns true if the oposing unit was destroyed>
 	*/
-	void DealDamage(ABaseUnit* oposingUnit, float damage);
+	bool DealDamage(ABaseUnit* oposingUnit, float damage);
 };
