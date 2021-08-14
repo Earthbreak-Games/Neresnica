@@ -192,10 +192,16 @@ void AArenaGrid::EraseHeightState(int index)
 	}
 }
 
-void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, float padding)
+FSaveState AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, float padding)
 {
+	ClearTheBoard();
+
+	FSaveState result;
+
 	if (SavedStates.IsValidIndex(index))
 	{
+		result = SavedStates[index];
+
 		// Set heights from saved state
 		FloorHeights.Empty();
 		FloorHeights = SavedStates[index].mHeights;
@@ -263,7 +269,10 @@ void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, floa
 	else
 	{
 		SpawnFloor(origin, radius, padding);
+		result = FSaveState(FloorPieces.Num());
 	}
+
+	return result;
 }
 
 FSaveState AArenaGrid::LoadSaveStateData(UPARAM(ref) int&index, float scale)

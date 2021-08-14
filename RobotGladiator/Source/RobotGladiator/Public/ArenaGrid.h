@@ -60,6 +60,14 @@ public:
 		mName = "";
 		mModifiers.AddZeroed();
 	}
+
+	// Sets default values for an arena size
+	FSaveState(int size)
+	{
+		mHeights.AddZeroed(size);
+		mName = "";
+		mModifiers.AddZeroed(size);
+	}
 };
 
 UCLASS()
@@ -133,7 +141,7 @@ public:
 	 *  @param {int} radius - The radius of the grid
 	 *  @param {float} padding - The amount of padding between each cell in the grid
 	 */
-	void EditorLoadSaveState(int index, FVector origin, int radius, float padding);
+	FSaveState EditorLoadSaveState(int index, FVector origin, int radius, float padding);
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Loads the next level during gameplay. Loads from the saved state if any remain,
