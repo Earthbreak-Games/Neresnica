@@ -403,7 +403,7 @@ void AArenaGrid::LoadModifiers(UPARAM(ref) FSaveState cur)
 			// Init spawn parameters
 			FActorSpawnParameters spawnParams;
 			spawnParams.Owner = this;
-			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 			// Set spawn transform
 			FVector loc = FloorPieces[i]->GetActorLocation();
@@ -463,7 +463,8 @@ void AArenaGrid::ClearTheBoard()
 	// Clear any remaining data from the previous level
 	for (AActor* iter : Enemies)
 	{
-		iter->Destroy();
+		if(IsValid(iter))
+			iter->Destroy();
 	}
 	for (AActor* iter : Toppers)
 	{
