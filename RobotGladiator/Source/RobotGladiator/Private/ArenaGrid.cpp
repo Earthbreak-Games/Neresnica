@@ -535,6 +535,10 @@ void AArenaGrid::CalculateTileModifiers(float chance)
 		// Store the generated modifier in the save state
 		FloorModifiers.Add(modifier);
 	}
+
+	// Generate a tile for the gladiator and set it to that
+	int gladiatorIndex = FGenericPlatformMath::CeilToInt(mRand.FRandRange(18.0f, FloorPieces.Num()));
+	FloorModifiers[gladiatorIndex] = ModifierIDs::GLADIATOR;
 }
 
 void AArenaGrid::CalculateRing(HexCell center, int radius)
