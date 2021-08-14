@@ -42,6 +42,7 @@ public:
 		TOXIC_TOPPER,
 		JUMP_TOPPER,
 		GLADIATOR,
+		GRUNT,
 
 		NUM_MODIFIERS
 	};
@@ -157,6 +158,8 @@ public:
 	TSubclassOf<class AActor> FloorPieceActor;
 	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> Gladiator;
+	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> Grunt;
 	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> healTopper;
 	UPROPERTY(EditAnywhere,Category=Actors)

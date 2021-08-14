@@ -425,6 +425,33 @@ void AArenaGrid::LoadModifiers(UPARAM(ref) FSaveState cur)
 			}
 			break;
 		}
+		case ModifierIDs::GRUNT:	// Spawn grunts
+		{
+			// Init spawn parameters
+			FActorSpawnParameters spawnParams;
+			spawnParams.Owner = this;
+			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			// Set spawn transform
+			FVector loc = FloorPieces[i]->GetActorLocation();
+			loc.Z = FloorHeights[i] + 1510.0f;	// Find a programmatic way to determine this
+			FRotator rot = this->GetActorRotation();
+
+			// Check if actor to spawn is valid
+			if (Grunt)
+			{
+				// Spawn new enemy
+				AActor* enemy = GetWorld()->SpawnActor<AActor>(Grunt, loc, rot, spawnParams);
+
+				// Child new enemy to the grid object
+				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+				enemy->AttachToActor(this, attachRules);
+
+				// Add the enemy to the array
+				Enemies.Add(enemy);
+			}
+			break;
+		}
 		default:
 			break;
 		}
