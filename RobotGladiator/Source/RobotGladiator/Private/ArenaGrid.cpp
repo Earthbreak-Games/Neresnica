@@ -430,7 +430,7 @@ void AArenaGrid::LoadModifiers(UPARAM(ref) FSaveState cur)
 			// Init spawn parameters
 			FActorSpawnParameters spawnParams;
 			spawnParams.Owner = this;
-			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 			// Set spawn transform
 			FVector loc = FloorPieces[i]->GetActorLocation();

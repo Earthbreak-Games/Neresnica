@@ -41,10 +41,11 @@ public:
 		HEAL_TOPPER,
 		TOXIC_TOPPER,
 		JUMP_TOPPER,
-		GLADIATOR,
 		GRUNT,
 
-		NUM_MODIFIERS
+		NUM_MODIFIERS,
+
+		GLADIATOR			// This is at the end so that it can be stored in the modifier system but not factored into modifier chance
 	};
 
 	FSaveState(TArray<float> inHeights, TArray<int> inMods) : mHeights(inHeights), mModifiers(inMods)
