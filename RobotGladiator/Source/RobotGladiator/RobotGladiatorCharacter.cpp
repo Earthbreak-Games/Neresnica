@@ -41,7 +41,7 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	GetCharacterMovement()->AirControl = 0.2f;
 	BaseSpeed = 600.0f;
 	LockOnSpeed = 400.0f;
-	SprintMultiplier = 1.5f;
+	SprintMultiplier = 2.0f;
 
 	// Set default player stats
 	BaseAttackSpeed = 8.0f;
