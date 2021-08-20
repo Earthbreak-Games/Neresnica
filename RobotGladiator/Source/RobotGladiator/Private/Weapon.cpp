@@ -38,6 +38,7 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	DOREPLIFETIME(AWeapon, Rarity);
 	DOREPLIFETIME(AWeapon, WeaponType);
 	DOREPLIFETIME(AWeapon, WeaponName);
+	DOREPLIFETIME(AWeapon, Mesh);
 }
 
 void AWeapon::Tick(float DeltaTime)
