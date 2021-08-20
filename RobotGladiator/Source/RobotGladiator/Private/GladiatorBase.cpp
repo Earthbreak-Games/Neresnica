@@ -81,55 +81,55 @@ void AGladiatorBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TArray<AActor*> foundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
-	AActor* target = GetClosestPlayer(foundActors);
+	//TArray<AActor*> foundActors;
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
+	//AActor* target = GetClosestPlayer(foundActors);
 
-	if (mpTarget == nullptr || (mpTarget != nullptr && target != mpTarget))
-	{
-		mpTarget = target;
+	//if (mpTarget == nullptr || (mpTarget != nullptr && target != mpTarget))
+	//{
+	//	mpTarget = target;
 
-		//UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *(mpTarget->GetName()));
+	//	//UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *(mpTarget->GetName()));
 
-		
-	}
-	else if(mpTarget != nullptr)
-	{
-		FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
-		mDistanceToTarget = dir.Size();
-	}
-	
-	if ( !mIsOnCooldown && !mIsAttacking && mpTarget != nullptr)
-	{
-	
+	//	
+	//}
+	//else if(mpTarget != nullptr)
+	//{
+	//	FVector dir = mpTarget->GetActorLocation() - this->GetActorLocation();
+	//	mDistanceToTarget = dir.Size();
+	//}
+	//
+	//if ( !mIsOnCooldown && !mIsAttacking && mpTarget != nullptr)
+	//{
+	//
 
-		if (mDistanceToTarget <= mMeleeRange) 
-		{
-			MeleeAttack();
-			mTimeLeftOnCoolDown = mMeleeCoolDown;
-		}
-		else
-		{
-			//add function to get farthest player from gladiator
+	//	if (mDistanceToTarget <= mMeleeRange) 
+	//	{
+	//		MeleeAttack();
+	//		mTimeLeftOnCoolDown = mMeleeCoolDown;
+	//	}
+	//	else
+	//	{
+	//		//add function to get farthest player from gladiator
 
-			RangedAttack();
-			mTimeLeftOnCoolDown = mRangedCoolDownTime;
+	//		RangedAttack();
+	//		mTimeLeftOnCoolDown = mRangedCoolDownTime;
 
-		}
+	//	}
 
-		
-		//mIsOnCooldown = true;
-	}
-	else if (mIsOnCooldown)
-	{
-		mTimeLeftOnCoolDown -= DeltaTime;
-		if (mTimeLeftOnCoolDown <= 0)
-		{
-			mTimeLeftOnCoolDown = 0;
-			mIsOnCooldown = false;
-		}
-	}
+	//	
+	//	//mIsOnCooldown = true;
+	//}
+	//else if (mIsOnCooldown)
+	//{
+	//	mTimeLeftOnCoolDown -= DeltaTime;
+	//	if (mTimeLeftOnCoolDown <= 0)
+	//	{
+	//		mTimeLeftOnCoolDown = 0;
+	//		mIsOnCooldown = false;
+	//	}
+	//}
 
 
-	//UE_LOG(LogTemp, Warning, TEXT("Cooldown: %s"), *(FString::SanitizeFloat(mTimeLeftOnCoolDown)));
+	////UE_LOG(LogTemp, Warning, TEXT("Cooldown: %s"), *(FString::SanitizeFloat(mTimeLeftOnCoolDown)));
 }
