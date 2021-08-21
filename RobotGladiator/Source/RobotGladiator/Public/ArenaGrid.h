@@ -19,6 +19,7 @@
 #include "ArenaGrid.generated.h"
 
 #define DEBUGMESSAGE(x, ...) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT(x), __VA_ARGS__));}
+#define TIMEDDEBUGMESSAGE(x, y, ...) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, x, FColor::Yellow, FString::Printf(TEXT(y), __VA_ARGS__));}
 
 USTRUCT(BlueprintType)
 /** @brief A struct encompassing the data saved for each hex cell
@@ -175,6 +176,7 @@ public:
 	TSubclassOf<class AActor> jumpTopper;
 	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> toxicTopper;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<AActor*> FloorPieces;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
@@ -185,9 +187,22 @@ public:
 	TArray<float> FloorHeights;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<int> FloorModifiers;
+
 	TArray<HexCell> Cells;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FSaveState> SavedStates;
+
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentPlain;
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentHeal;
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentToxic;
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentJump;
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentGrunt;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Radius;
