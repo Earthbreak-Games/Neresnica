@@ -125,7 +125,7 @@ public:
 	/** @brief Calls the calculate tile positions protected function in order to randomize heights
 	*  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
 	*/
-	void GenerateArena(float chance, float scale = 1.0f);
+	void GenerateArena(float scale = 1.0f);
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Erases the save state stored at the given index
@@ -223,7 +223,7 @@ protected:
 	/** @brief Calculates the modifiers on each tile
 	 *	@param {float} chance - The probability that a given tile will not have a modifier, as a percentage out of 100
 	 */
-	void CalculateTileModifiers(float chance);
+	void CalculateTileModifiers();
 
 	/** @brief Calculates a ring around a tile with a given radius
 	 *  @param {HexCell} center - The center tile of the ring

@@ -177,11 +177,11 @@ int AArenaGrid::SaveState(int index, bool freshState)
 	return result;
 }
 
-void AArenaGrid::GenerateArena(float chance, float scale)
+void AArenaGrid::GenerateArena(float scale)
 {
 	scale *= 0.001;
 	CalculateTilePositions(scale);
-	CalculateTileModifiers(chance);
+	CalculateTileModifiers();
 }
 
 void AArenaGrid::EraseHeightState(int index)
@@ -519,7 +519,7 @@ void AArenaGrid::CalculateTilePositions(float scale)
 	}
 }
 
-void AArenaGrid::CalculateTileModifiers(float chance)
+void AArenaGrid::CalculateTileModifiers()
 {
 	// Clear previous modifiers and check to make sure percentage is correct
 	FloorModifiers.Empty();
