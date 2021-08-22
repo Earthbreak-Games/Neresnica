@@ -456,6 +456,8 @@ void AArenaGrid::LoadModifiers(UPARAM(ref) FSaveState cur)
 			break;
 		}
 	}
+
+	
 }
 
 void AArenaGrid::ClearTheBoard()
@@ -479,6 +481,7 @@ void AArenaGrid::ClearTheBoard()
 void AArenaGrid::BeginPlay()
 {
 	Super::BeginPlay();
+	CreateNavLinks();
 }
 
 void AArenaGrid::CalculateTilePositions(float scale)
@@ -555,12 +558,27 @@ void AArenaGrid::CalculateRing(HexCell center, int radius)
 			currentCell = GetNeighbor(currentCell, i);
 		}
 	}
+
 }
 
 // Called every frame
 void AArenaGrid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+void AArenaGrid::CreateNavLinks()
+{
+	// left on top right on bottom
+
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Creating Nan Links"));
+	FActorSpawnParameters SpawnParams;
+	
+	
+	AMyNavLinkProxy* NavLinkSpawnRef = Cast<AMyNavLinkProxy>(GetWorld()->SpawnActor<AActor>(NavLinkRef, FVector(500.0, -10.000000, 2590.0), FRotator(0,0,0), SpawnParams));
+	NavLinkSpawnRef->Set_Jump_Points(FVector(-413.462616, 0, 474.945404), FVector(0.000000, 50.000000, 0.000000));
 
 }
 

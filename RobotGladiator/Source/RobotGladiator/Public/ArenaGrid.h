@@ -15,6 +15,7 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "HexCell.h"
+#include "MyNavLinkProxy.h"
 #include "Math/UnrealMathUtility.h"
 #include "ArenaGrid.generated.h"
 
@@ -190,6 +191,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHeight;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> NavLinkRef;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -213,8 +217,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	void CreateNavLinks();
 
 private:
 	// A random stream to seed the perlin noise sample
 	FRandomStream mRand;
+
 };
