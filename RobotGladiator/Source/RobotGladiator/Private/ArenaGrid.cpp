@@ -177,11 +177,11 @@ int AArenaGrid::SaveState(int index, bool freshState)
 	return result;
 }
 
-void AArenaGrid::GenerateArena(float chance, float scale)
+void AArenaGrid::GenerateArena(float scale)
 {
 	scale *= 0.001;
 	CalculateTilePositions(scale);
-	CalculateTileModifiers(chance);
+	CalculateTileModifiers();
 }
 
 void AArenaGrid::EraseHeightState(int index)
@@ -192,10 +192,16 @@ void AArenaGrid::EraseHeightState(int index)
 	}
 }
 
-void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, float padding)
+FSaveState AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, float padding)
 {
+	ClearTheBoard();
+
+	FSaveState result;
+
 	if (SavedStates.IsValidIndex(index))
 	{
+		result = SavedStates[index];
+
 		// Set heights from saved state
 		FloorHeights.Empty();
 		FloorHeights = SavedStates[index].mHeights;
@@ -263,7 +269,10 @@ void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, floa
 	else
 	{
 		SpawnFloor(origin, radius, padding);
+		result = FSaveState(FloorPieces.Num());
 	}
+
+	return result;
 }
 
 FSaveState AArenaGrid::LoadSaveStateData(UPARAM(ref) int&index, float scale)
@@ -513,31 +522,97 @@ void AArenaGrid::CalculateTilePositions(float scale)
 	}
 }
 
-void AArenaGrid::CalculateTileModifiers(float chance)
+void AArenaGrid::CalculateTileModifiers()
 {
-	// Clear previous modifiers and split remaining percentage into each modifier
+	// Clear previous modifiers and check to make sure percentage is correct
 	FloorModifiers.Empty();
-	float ratio = (100.0f - chance) / (ModifierIDs::NUM_MODIFIERS - 1);
+	float overallChance = PercentGrunt + PercentHeal + PercentJump + PercentPlain + PercentToxic;
 
-	// Generate new modifiers for each hex cell
-	float modifier;
-	for (int i = 0; i < FloorPieces.Num(); i++)
+	// If the percentage split is valid
+	if (overallChance <= 100.0)
 	{
-		// Generate a random number from 0 to 100 and set the modifier
-		modifier = mRand.FRandRange(0.0f, 100.0f);
-		if (modifier > chance)
+		// Split %100 into the blocks, erring on the side of plain if there are inaccuracies
+		float pctToxic = 100.0 - PercentToxic;
+		float pctJump = pctToxic - PercentJump;
+		float pctHeal = pctJump - PercentHeal;
+		float pctGrunt = pctHeal - PercentGrunt;
+		PercentPlain = pctGrunt;
+
+		// Generate new modifiers for each hex cell
+		for (int i = 0; i < FloorPieces.Num(); i++)
 		{
-			modifier -= chance;
-			modifier = StaticCast<int>(modifier / ratio) + 1;
+			float modifier;
+
+			// Generate a random number from 0 to 100 and set the modifier
+			modifier = mRand.FRandRange(0.0f, 100.0f);
+			if (modifier > pctToxic)
+			{
+				modifier = ModifierIDs::TOXIC_TOPPER;
+			}
+			else if (modifier > pctJump)
+			{
+				modifier = ModifierIDs::JUMP_TOPPER;
+			}
+			else if (modifier > pctHeal)
+			{
+				modifier = ModifierIDs::HEAL_TOPPER;
+			}
+			else if (modifier > pctGrunt)
+			{
+				modifier = ModifierIDs::GRUNT;
+			}
+			else
+			{
+				modifier = ModifierIDs::NONE;
+			}
+
+			// Store the generated modifier in the save state
+			FloorModifiers.Add(modifier);
 		}
+	}
+	// If the percentage split is invalid but not all plain
+	else
+	{
+		// Warn user
+		TIMEDDEBUGMESSAGE(5.0f, "Total Percentage %f is over 100%, using even percentages", overallChance)
+		
+		if (PercentPlain <= 100.0f)
+		{
+			// Split remaining percentage into each modifier
+			float ratio = (100.0f - PercentPlain) / (ModifierIDs::NUM_MODIFIERS - 1);
+
+			// Generate new modifiers for each hex cell
+			float modifier;
+			for (int i = 0; i < FloorPieces.Num(); i++)
+			{
+				// Generate a random number from 0 to 100 and set the modifier
+				modifier = mRand.FRandRange(0.0f, 100.0f);
+				if (modifier > PercentPlain)
+				{
+					modifier -= PercentPlain;
+					modifier = StaticCast<int>(modifier / ratio) + 1;
+				}
+				else
+				{
+					modifier = ModifierIDs::NONE;
+				}
+
+				// Store the generated modifier in the save state
+				FloorModifiers.Add(modifier);
+			}
+		}
+		// If the percentage split is invalid and it's all plain
 		else
 		{
-			modifier = ModifierIDs::NONE;
-		}
+			// Warn user
+			TIMEDDEBUGMESSAGE(5.0f, "Percent Plain %f is over 100%, are you sure you wanted to do that?", PercentPlain)
 
-		// Store the generated modifier in the save state
-		FloorModifiers.Add(modifier);
+			// Set every modifier to none
+			FloorModifiers.AddZeroed(FloorPieces.Num());
+		}
 	}
+
+	
 
 	// Generate a tile for the gladiator and set it to that
 	int gladiatorIndex = FGenericPlatformMath::CeilToInt(mRand.FRandRange(18.0f, FloorPieces.Num()));
