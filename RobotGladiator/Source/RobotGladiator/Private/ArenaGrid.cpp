@@ -525,6 +525,7 @@ void AArenaGrid::CalculateTileModifiers()
 	FloorModifiers.Empty();
 	float overallChance = PercentGrunt + PercentHeal + PercentJump + PercentPlain + PercentToxic;
 
+	// If the percentage split is valid
 	if (overallChance <= 100.0)
 	{
 		// Split %100 into the blocks, erring on the side of plain if there are inaccuracies
@@ -566,6 +567,7 @@ void AArenaGrid::CalculateTileModifiers()
 			FloorModifiers.Add(modifier);
 		}
 	}
+	// If the percentage split is invalid but not all plain
 	else
 	{
 		// Warn user
@@ -596,6 +598,7 @@ void AArenaGrid::CalculateTileModifiers()
 				FloorModifiers.Add(modifier);
 			}
 		}
+		// If the percentage split is invalid and it's all plain
 		else
 		{
 			// Warn user
