@@ -14,10 +14,9 @@ AMyNavLinkProxy::AMyNavLinkProxy(){
 void AMyNavLinkProxy::BeginPlay() {
 	Super::BeginPlay();
 
-	
 	base_ptr = &(ANavLinkProxy::PointLinks); // listen i know its ugly but it works
-
 }
+
 
 
 void AMyNavLinkProxy::Set_Jump_Points(FVector left, FVector right) {

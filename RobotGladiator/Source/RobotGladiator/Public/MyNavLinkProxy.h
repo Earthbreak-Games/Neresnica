@@ -31,8 +31,9 @@ class ROBOTGLADIATOR_API AMyNavLinkProxy : public ANavLinkProxy
 	TArray<FNavigationLink>* base_ptr; //cursed pointer
 
 public:
+
 	UFUNCTION(BlueprintCallable)
-		void Set_Jump_Points(FVector left, FVector right);
+	void Set_Jump_Points(FVector left, FVector right);
 
 };
 

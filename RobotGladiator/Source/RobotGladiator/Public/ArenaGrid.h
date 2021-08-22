@@ -115,6 +115,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetupLobbyOrientation(int numTiles);
+	
+	UFUNCTION(BlueprintCallable)
+	void CreateNavLinks();
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Save the current hex grid state to the saved state array at the specified index.
@@ -246,8 +249,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-	void CreateNavLinks();
+	
 
 private:
 	// A random stream to seed the perlin noise sample

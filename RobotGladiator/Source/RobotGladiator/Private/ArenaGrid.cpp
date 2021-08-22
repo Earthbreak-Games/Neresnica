@@ -481,16 +481,20 @@ void AArenaGrid::ClearTheBoard()
 	{
 		iter->Destroy();
 	}
+	for (AActor* iter : NavLinks)
+	{
+		iter->Destroy();
+	}
 	Enemies.Empty();
 	Toppers.Empty();
 	FloorHeights.Empty();
+	NavLinks.Empty();
 }
 
 // Called when the game starts or when spawned
 void AArenaGrid::BeginPlay()
 {
 	Super::BeginPlay();
-	CreateNavLinks();
 }
 
 void AArenaGrid::CalculateTilePositions(float scale)
@@ -658,7 +662,6 @@ void AArenaGrid::CreateNavLinks()
 	
 	// get spawn params
 	FActorSpawnParameters SpawnParams;
-	
 	FVector loc;
 	float to_find_x;
 	float to_find_y;
@@ -688,49 +691,58 @@ void AArenaGrid::CreateNavLinks()
 			// DrawDebugLine(GetWorld(), loc, to_find, FColor::Red, false, 100, 0, 3);
 
 			// preform hitscan
-			bool IsHit = GetWorld()->LineTraceSingleByChannel(Outhit, loc, to_find, ECC_Visibility, CollisionParams);
+			bool IsHit = false;
+			IsHit = GetWorld()->LineTraceSingleByChannel(Outhit, loc, to_find, ECC_Visibility, CollisionParams);
 
 			// if we find something
 			if (IsHit) {
 
 				// grab its location
-				FVector other_loc = (Outhit.GetActor()->GetActorLocation());
+				if (Outhit.GetActor()) {
+
 				
-				// if it is lower
-				if (other_loc.Z < loc.Z) {
+					FVector other_loc = (Outhit.GetActor()->GetActorLocation());
 					
-					// check if the difference is greater than the threhhold
-					float diff = loc.Z - other_loc.Z;
+					// if it is lower
+					// if (other_loc.Z < loc.Z) {
 					
-					if (diff > JumpDifferenceThreshhold) {
+						// check if the difference is greater than the threhhold
+						float diff = loc.Z - other_loc.Z;
+					
+						// if (diff > JumpDifferenceThreshhold) {
 						
-						// create jump point
+							// create jump point
 
-						// get middle of object
-						FVector mid = (other_loc + loc) / 2;
+							// get middle of object
+							FVector mid = (other_loc + loc) / 2;
 						
-						// add a height offset to add jump points on top of objects
-						float height_offset = 1500;
+							// add a height offset to add jump points on top of objects
+							float height_offset = 1500;
 						
 
-						// DEBUG CODE
-						// FVector left_jump_world_loc = FVector(loc.X, loc.Y, loc.Z + height_offset);
-						// FVector right_jump_world_loc = FVector(other_loc.X, other_loc.Y, other_loc.Z + height_offset);
-						// DrawDebugLine(GetWorld(), left_jump_world_loc, right_jump_world_loc, FColor::Red, false, 100, 0, 3);
+							// DEBUG CODE
+							// FVector left_jump_world_loc = FVector(loc.X, loc.Y, loc.Z + height_offset);
+							// FVector right_jump_world_loc = FVector(other_loc.X, other_loc.Y, other_loc.Z + height_offset);
+							// DrawDebugLine(GetWorld(), left_jump_world_loc, right_jump_world_loc, FColor::Red, false, 100, 0, 3);
 
-						// spawn nav like between objects
-						AMyNavLinkProxy* NavLinkSpawnRef = Cast<AMyNavLinkProxy>(GetWorld()->SpawnActor<AActor>(NavLinkRef, mid, FRotator(0, 0, 0), SpawnParams));
+							// spawn nav like between objects
+							AMyNavLinkProxy* NavLinkSpawnRef;
+							AActor* tmp = GetWorld()->SpawnActor<AActor>(NavLinkRef, mid, FRotator(0, 0, 0), SpawnParams);
+							NavLinkSpawnRef = Cast<AMyNavLinkProxy>(tmp);
+
 						
-						// add it to the array
-						NavLinks.Add(NavLinkSpawnRef);
 
-						// get jump points locations
-						FVector left_jump_rel_loc = FVector(loc.X - mid.X, loc.Y - mid.Y, loc.Z + height_offset - mid.Z);
-						FVector right_jump_rel_loc = FVector(other_loc.X - mid.X, other_loc.Y - mid.Y, other_loc.Z + height_offset - mid.Z);
+							// add it to the array
+							NavLinks.Add(NavLinkSpawnRef);
 
-						// set jump point locations 
-						NavLinkSpawnRef->Set_Jump_Points(left_jump_rel_loc, right_jump_rel_loc);
-					}
+							// get jump points locations
+							FVector left_jump_rel_loc = FVector(loc.X - mid.X, loc.Y - mid.Y, loc.Z + height_offset - mid.Z);
+							FVector right_jump_rel_loc = FVector(other_loc.X - mid.X, other_loc.Y - mid.Y, other_loc.Z + height_offset - mid.Z);
+
+							// set jump point locations 
+							NavLinkSpawnRef->Set_Jump_Points(left_jump_rel_loc, right_jump_rel_loc);
+						//}
+					//}
 				}
 			}
 		}
