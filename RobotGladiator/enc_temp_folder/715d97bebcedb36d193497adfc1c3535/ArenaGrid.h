@@ -196,7 +196,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float JumpDifferenceThreshhold;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> NavLinkRef;
 
