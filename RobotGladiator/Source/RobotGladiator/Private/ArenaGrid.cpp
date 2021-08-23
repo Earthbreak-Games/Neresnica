@@ -465,6 +465,8 @@ void AArenaGrid::LoadModifiers(UPARAM(ref) FSaveState cur)
 			break;
 		}
 	}
+
+	
 }
 
 void AArenaGrid::ClearTheBoard()
@@ -479,9 +481,14 @@ void AArenaGrid::ClearTheBoard()
 	{
 		iter->Destroy();
 	}
+	for (AActor* iter : NavLinks)
+	{
+		iter->Destroy();
+	}
 	Enemies.Empty();
 	Toppers.Empty();
 	FloorHeights.Empty();
+	NavLinks.Empty();
 }
 
 // Called when the game starts or when spawned
@@ -630,12 +637,119 @@ void AArenaGrid::CalculateRing(HexCell center, int radius)
 			currentCell = GetNeighbor(currentCell, i);
 		}
 	}
+
 }
 
 // Called every frame
 void AArenaGrid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+// class UNavigationSystemV1;
+
+void AArenaGrid::CreateNavLinks()
+{
+	// left on top right on bottom - how to spawn links
+
+	// spawn nav link in world at location 
+	// AMyNavLinkProxy* NavLinkSpawnRef1 = Cast<AMyNavLinkProxy>(GetWorld()->SpawnActor<AActor>(NavLinkRef, FVector(x, y, z), FRotator(0,0,0), SpawnParams));
+	// set jump points of nav link (left on top, right on bottom)
+	// NavLinkSpawnRef1->Set_Jump_Points(FVector(relative X, relative Y, relative Z), FVector(relative X, relative Y, relative Z));
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Creating Nan Links"));
+	
+	// get spawn params
+	FActorSpawnParameters SpawnParams;
+	FVector loc;
+	float to_find_x;
+	float to_find_y;
+
+	// loop through all floor pieces
+	for (AActor* floor_piece : FloorPieces) {
+		loc = floor_piece->GetActorLocation();
+		
+		// loop through all faces
+		for (int i = 0; i < 1; i++)
+		{
+			// calculate direction to check
+			// okay i have no idea why this works mathamaticly but its good enough
+			to_find_x = ((Padding * 25) * cos(i)) + loc.X;
+			to_find_y = ((Padding * 25) * sin(i)) + loc.Y;
+
+			// make into vector
+			FVector to_find = FVector(to_find_x, to_find_y, loc.Z);
+
+			// run hit scan
+			FHitResult Outhit;
+
+			FCollisionQueryParams CollisionParams;
+			CollisionParams.AddIgnoredActor(floor_piece);
+			
+			// draw hitscan lines
+			// DrawDebugLine(GetWorld(), loc, to_find, FColor::Red, false, 100, 0, 3);
+
+			// preform hitscan
+			bool IsHit = false;
+			IsHit = GetWorld()->LineTraceSingleByChannel(Outhit, loc, to_find, ECC_Visibility, CollisionParams);
+
+			// if we find something
+			if (IsHit) {
+
+				// grab its location
+				if (Outhit.GetActor()) {
+
+				
+					FVector other_loc = (Outhit.GetActor()->GetActorLocation());
+					
+					// if it is lower
+					// if (other_loc.Z < loc.Z) {
+					
+						// check if the difference is greater than the threhhold
+						float diff = loc.Z - other_loc.Z;
+					
+						// if (diff > JumpDifferenceThreshhold) {
+						
+							// create jump point
+
+							// get middle of object
+							FVector mid = (other_loc + loc) / 2;
+						
+							// add a height offset to add jump points on top of objects
+							float height_offset = 1500;
+						
+
+							// DEBUG CODE
+							// FVector left_jump_world_loc = FVector(loc.X, loc.Y, loc.Z + height_offset);
+							// FVector right_jump_world_loc = FVector(other_loc.X, other_loc.Y, other_loc.Z + height_offset);
+							// DrawDebugLine(GetWorld(), left_jump_world_loc, right_jump_world_loc, FColor::Red, false, 100, 0, 3);
+
+							// spawn nav like between objects
+							AMyNavLinkProxy* NavLinkSpawnRef;
+							AActor* tmp = GetWorld()->SpawnActor<AActor>(NavLinkRef, mid, FRotator(0, 0, 0), SpawnParams);
+							NavLinkSpawnRef = Cast<AMyNavLinkProxy>(tmp);
+
+						
+
+							// add it to the array
+							NavLinks.Add(NavLinkSpawnRef);
+
+							// get jump points locations
+							FVector left_jump_rel_loc = FVector(loc.X - mid.X, loc.Y - mid.Y, loc.Z + height_offset - mid.Z);
+							FVector right_jump_rel_loc = FVector(other_loc.X - mid.X, other_loc.Y - mid.Y, other_loc.Z + height_offset - mid.Z);
+
+							// set jump point locations 
+							NavLinkSpawnRef->Set_Jump_Points(left_jump_rel_loc, right_jump_rel_loc);
+						//}
+					//}
+				}
+			}
+		}
+	}
+	
+
+
 
 }
 

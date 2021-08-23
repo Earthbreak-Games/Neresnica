@@ -15,7 +15,10 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "HexCell.h"
+#include "MyNavLinkProxy.h"
+#include "DrawDebugHelpers.h"
 #include "Math/UnrealMathUtility.h"
+// #include "NavigationSystem.h"
 #include "ArenaGrid.generated.h"
 
 #define DEBUGMESSAGE(x, ...) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT(x), __VA_ARGS__));}
@@ -112,6 +115,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetupLobbyOrientation(int numTiles);
+	
+	UFUNCTION(BlueprintCallable)
+	void CreateNavLinks();
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Save the current hex grid state to the saved state array at the specified index.
@@ -189,6 +195,7 @@ public:
 	TArray<int> FloorModifiers;
 
 	TArray<HexCell> Cells;
+	TArray<AMyNavLinkProxy*> NavLinks;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FSaveState> SavedStates;
 
@@ -212,6 +219,12 @@ public:
 	float MinHeight;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float JumpDifferenceThreshhold;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> NavLinkRef;
 
 protected:
 	virtual void BeginPlay() override;
@@ -236,8 +249,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	
 
 private:
 	// A random stream to seed the perlin noise sample
 	FRandomStream mRand;
+
 };
