@@ -41,6 +41,43 @@ void ABaseUnit::Tick(float DeltaTime)
 
 }
 
+/**   @brief Get the closes player to the gladiator
+ *	  @param {TArray<AActor*>} Array - array of actors to choose from -
+ *    @return {AActor*} - the closest player to the gladiator
+ */
+AActor* ABaseUnit::GetClosestPlayer(TArray<AActor*> Array)
+{
+	AActor* closestPlayer = nullptr;
+	float distance = INT_MAX;
+
+
+	//find the closes actor
+	for (AActor* actor : Array)
+	{
+		if (actor != this)
+		{
+			if (closestPlayer == nullptr)
+			{
+				closestPlayer = actor;
+				FVector dir = closestPlayer->GetActorLocation() - this->GetActorLocation();
+				distance = dir.Size();
+			}
+			else
+			{
+				FVector dir = actor->GetActorLocation() - this->GetActorLocation();
+
+				if (dir.SizeSquared() < distance * distance)
+				{
+					closestPlayer = actor;
+					distance = dir.Size();
+				}
+			}
+		}
+	}
+
+	return closestPlayer;
+}
+
 // Called to bind functionality to input
 void ABaseUnit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

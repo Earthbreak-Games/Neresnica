@@ -77,4 +77,10 @@ public:
 	*    @return {<void>} - <null>
 	*/
 	void DealDamage(ABaseUnit* oposingUnit, float damage);
+
+	/**   @brief Get the closes player to the gladiator
+	 *	  @param {TArray<AActor*>} Array - array of actors to choose from -
+	 *    @return {AActor*} - the closest player to the gladiator
+	 */
+	AActor* GetClosestPlayer(TArray<AActor*> Array);
 };
