@@ -41,6 +41,43 @@ void ABaseUnit::Tick(float DeltaTime)
 
 }
 
+/**   @brief Get the closes player to the gladiator
+ *	  @param {TArray<AActor*>} Array - array of actors to choose from -
+ *    @return {AActor*} - the closest player to the gladiator
+ */
+AActor* ABaseUnit::GetClosestPlayer(TArray<AActor*> Array)
+{
+	AActor* closestPlayer = nullptr;
+	float distance = INT_MAX;
+
+
+	//find the closes actor
+	for (AActor* actor : Array)
+	{
+		if (actor != this)
+		{
+			if (closestPlayer == nullptr)
+			{
+				closestPlayer = actor;
+				FVector dir = closestPlayer->GetActorLocation() - this->GetActorLocation();
+				distance = dir.Size();
+			}
+			else
+			{
+				FVector dir = actor->GetActorLocation() - this->GetActorLocation();
+
+				if (dir.SizeSquared() < distance * distance)
+				{
+					closestPlayer = actor;
+					distance = dir.Size();
+				}
+			}
+		}
+	}
+
+	return closestPlayer;
+}
+
 // Called to bind functionality to input
 void ABaseUnit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -52,13 +89,15 @@ void ABaseUnit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
  *    @param {float} damage - damage to be taken
  *    @return {void} null
  */
-void ABaseUnit::TakeDamage_Unit(float damage)
+bool ABaseUnit::TakeDamage_Unit(float damage)
 {
 	mHealth -= damage;
 	if (mHealth <= 0)
 	{
-		Destroy();
+		return Destroy();
 	}
+
+	return false;
 }
 
 
@@ -92,9 +131,12 @@ void ABaseUnit::HealUnit(ABaseUnit* oposingUnit, float healAmount)
  *    @param {<float>} damage - damage>
  *    @return {<void>} - <null>
  */
-void ABaseUnit::DealDamage(ABaseUnit* oposingUnit, float damage)
+bool ABaseUnit::DealDamage(ABaseUnit* oposingUnit, float damage)
 {
+	bool destroyed = false;
 	if(oposingUnit)
-		oposingUnit->TakeDamage_Unit(damage);
+		return oposingUnit->TakeDamage_Unit(damage);
+
+	return destroyed;
 }
 
