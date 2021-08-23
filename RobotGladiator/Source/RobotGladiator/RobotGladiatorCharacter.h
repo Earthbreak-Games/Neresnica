@@ -90,6 +90,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AxeDamageMultiplier;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator EnemyLookAtRotation;
+
 protected:
 
 	// Called for forwards/backward input
