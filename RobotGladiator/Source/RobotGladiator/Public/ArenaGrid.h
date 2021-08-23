@@ -19,6 +19,7 @@
 #include "ArenaGrid.generated.h"
 
 #define DEBUGMESSAGE(x, ...) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT(x), __VA_ARGS__));}
+#define TIMEDDEBUGMESSAGE(x, y, ...) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, x, FColor::Yellow, FString::Printf(TEXT(y), __VA_ARGS__));}
 
 USTRUCT(BlueprintType)
 /** @brief A struct encompassing the data saved for each hex cell
@@ -41,9 +42,11 @@ public:
 		HEAL_TOPPER,
 		TOXIC_TOPPER,
 		JUMP_TOPPER,
-		GLADIATOR,
+		GRUNT,
 
-		NUM_MODIFIERS
+		NUM_MODIFIERS,
+
+		GLADIATOR			// This is at the end so that it can be stored in the modifier system but not factored into modifier chance
 	};
 
 	FSaveState(TArray<float> inHeights, TArray<int> inMods) : mHeights(inHeights), mModifiers(inMods)
@@ -57,6 +60,14 @@ public:
 		mHeights.AddZeroed();
 		mName = "";
 		mModifiers.AddZeroed();
+	}
+
+	// Sets default values for an arena size
+	FSaveState(int size)
+	{
+		mHeights.AddZeroed(size);
+		mName = "";
+		mModifiers.AddZeroed(size);
 	}
 };
 
@@ -114,7 +125,7 @@ public:
 	/** @brief Calls the calculate tile positions protected function in order to randomize heights
 	*  @param {float} scale - A float scale factor for the Perlin noise sample, scaled by 0.001 in the math
 	*/
-	void GenerateArena(float chance, float scale = 1.0f);
+	void GenerateArena(float scale = 1.0f);
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Erases the save state stored at the given index
@@ -131,7 +142,7 @@ public:
 	 *  @param {int} radius - The radius of the grid
 	 *  @param {float} padding - The amount of padding between each cell in the grid
 	 */
-	void EditorLoadSaveState(int index, FVector origin, int radius, float padding);
+	FSaveState EditorLoadSaveState(int index, FVector origin, int radius, float padding);
 
 	UFUNCTION(BlueprintCallable)
 	/** @brief Loads the next level during gameplay. Loads from the saved state if any remain,
@@ -158,11 +169,14 @@ public:
 	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> Gladiator;
 	UPROPERTY(EditAnywhere,Category=Actors)
+	TSubclassOf<class AActor> Grunt;
+	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> healTopper;
 	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> jumpTopper;
 	UPROPERTY(EditAnywhere,Category=Actors)
 	TSubclassOf<class AActor> toxicTopper;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<AActor*> FloorPieces;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
@@ -173,9 +187,22 @@ public:
 	TArray<float> FloorHeights;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=CurrentArenaComponents)
 	TArray<int> FloorModifiers;
+
 	TArray<HexCell> Cells;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FSaveState> SavedStates;
+
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentPlain;
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentHeal;
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentToxic;
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentJump;
+	UPROPERTY(EditAnywhere, Category = ModifierChances)
+	float PercentGrunt;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Radius;
@@ -196,7 +223,7 @@ protected:
 	/** @brief Calculates the modifiers on each tile
 	 *	@param {float} chance - The probability that a given tile will not have a modifier, as a percentage out of 100
 	 */
-	void CalculateTileModifiers(float chance);
+	void CalculateTileModifiers();
 
 	/** @brief Calculates a ring around a tile with a given radius
 	 *  @param {HexCell} center - The center tile of the ring
