@@ -14,7 +14,7 @@ AWeapon::AWeapon()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon Mesh"));
+	//Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon Mesh"));
 }
 
 void AWeapon::SetWeaponStats(int baseDamage, ERarities rarity, EWeaponTypes type)
@@ -38,6 +38,7 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	DOREPLIFETIME(AWeapon, Rarity);
 	DOREPLIFETIME(AWeapon, WeaponType);
 	DOREPLIFETIME(AWeapon, WeaponName);
+	DOREPLIFETIME(AWeapon, Mesh);
 }
 
 void AWeapon::Tick(float DeltaTime)

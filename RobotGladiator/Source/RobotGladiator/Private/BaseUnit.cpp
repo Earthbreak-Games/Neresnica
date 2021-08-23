@@ -89,13 +89,15 @@ void ABaseUnit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
  *    @param {float} damage - damage to be taken
  *    @return {void} null
  */
-void ABaseUnit::TakeDamage_Unit(float damage)
+bool ABaseUnit::TakeDamage_Unit(float damage)
 {
 	mHealth -= damage;
 	if (mHealth <= 0)
 	{
-		Destroy();
+		return Destroy();
 	}
+
+	return false;
 }
 
 
@@ -129,9 +131,12 @@ void ABaseUnit::HealUnit(ABaseUnit* oposingUnit, float healAmount)
  *    @param {<float>} damage - damage>
  *    @return {<void>} - <null>
  */
-void ABaseUnit::DealDamage(ABaseUnit* oposingUnit, float damage)
+bool ABaseUnit::DealDamage(ABaseUnit* oposingUnit, float damage)
 {
+	bool destroyed = false;
 	if(oposingUnit)
-		oposingUnit->TakeDamage_Unit(damage);
+		return oposingUnit->TakeDamage_Unit(damage);
+
+	return destroyed;
 }
 
