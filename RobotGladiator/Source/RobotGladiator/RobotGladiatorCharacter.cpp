@@ -44,13 +44,13 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	SprintMultiplier = 2.0f;
 
 	// Set default player stats
-	BaseAttackSpeed = 8.0f;
+	BaseAttackSpeed = 10.0f;
 	SwordAttackSpeed = BaseAttackSpeed;
 	AxeAttackSpeed = BaseAttackSpeed;
 	MaxAttackSpeed = 20.0f;
 	mMaxHealth = 200.0f;
 	mHealth = mMaxHealth;
-	BaseDamage = 10.0f;
+	BaseDamage = 50.0f;
 	SwordDamageMultiplier = 1.0f;
 	AxeDamageMultiplier = 1.0f;
 
