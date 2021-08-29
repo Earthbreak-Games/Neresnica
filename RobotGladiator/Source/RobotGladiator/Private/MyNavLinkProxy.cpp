@@ -23,10 +23,12 @@ void AMyNavLinkProxy::Set_Jump_Points(FVector left, FVector right) {
 
 	auto link_data = base_ptr->GetData();
 	
+	
 	link_data->Left = left;
 	link_data->Right = right;
 
-	GetSmartLinkComp()->SetLinkData(link_data->Right, link_data->Left, ENavLinkDirection::LeftToRight);
+	GetSmartLinkComp()->SetLinkData(link_data->Right, link_data->Left, ENavLinkDirection::BothWays);
+	SetSmartLinkEnabled(true);
 
 }
 
