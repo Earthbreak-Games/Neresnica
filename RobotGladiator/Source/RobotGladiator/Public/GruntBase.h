@@ -24,7 +24,7 @@ class ROBOTGLADIATOR_API AGruntBase : public ABaseUnit
 	*	@param {TArray<AActor*>} Array - array of actors to choose from -
 	*   @return {AActor*} - the closest player to the gladiator
 	*/
-	AActor* GetClosestPlayer(TArray<AActor*> Array);
+	// AActor* GetClosestPlayer(TArray<AActor*> Array);
 
 protected:
 
@@ -35,24 +35,7 @@ public:
 
 	AGruntBase();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		AActor* mpTarget;
+	UFUNCTION(BlueprintCallable, Category="grunt")
+		AActor* GetClosestPlayer(TArray<AActor*> Array);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<AActor> mClasstoFind;
-
-	UFUNCTION(BlueprintImplementableEvent)
-		void MeleeAttack();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float mMeleeRange;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		float mDistanceToTarget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float mMeleeCoolDown;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		bool mIsAttacking;
 };

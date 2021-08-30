@@ -41,16 +41,16 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	GetCharacterMovement()->AirControl = 0.2f;
 	BaseSpeed = 600.0f;
 	LockOnSpeed = 400.0f;
-	SprintMultiplier = 1.5f;
+	SprintMultiplier = 2.0f;
 
 	// Set default player stats
-	BaseAttackSpeed = 8.0f;
+	BaseAttackSpeed = 10.0f;
 	SwordAttackSpeed = BaseAttackSpeed;
 	AxeAttackSpeed = BaseAttackSpeed;
 	MaxAttackSpeed = 20.0f;
-	mMaxHealth = 100.0f;
+	mMaxHealth = 200.0f;
 	mHealth = mMaxHealth;
-	BaseDamage = 10.0f;
+	BaseDamage = 50.0f;
 	SwordDamageMultiplier = 1.0f;
 	AxeDamageMultiplier = 1.0f;
 
@@ -236,8 +236,9 @@ void ARobotGladiatorCharacter::MoveRight(float Value)
 		if (IsLockedOnEnemy)
 		{
 			// Use follow camera rotation
-			Rotation = FollowCamera->GetComponentRotation();
+			//Rotation = FollowCamera->GetComponentRotation();
 			// set player char rotation
+			Rotation = EnemyLookAtRotation;
 			SetActorRotation(FRotator(0, Rotation.Yaw, 0), ETeleportType::None);
 			// Adjust player speed
 			GetCharacterMovement()->MaxWalkSpeed = LockOnSpeed;

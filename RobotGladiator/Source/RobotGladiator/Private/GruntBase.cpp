@@ -8,10 +8,6 @@
 AGruntBase::AGruntBase()
 {
 	SetActorTickEnabled(true);
-	mHealth = 10.0f;
-	mIsAttacking = false;
-	mMeleeRange = 0.0f;
-	mDistanceToTarget = 9999;
 }
 
 
@@ -19,6 +15,7 @@ void AGruntBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	/*
 	if (mpTarget == nullptr)
 	{
 		TArray<AActor*> foundActors;
@@ -26,12 +23,15 @@ void AGruntBase::BeginPlay()
 
 		mpTarget = GetClosestPlayer(foundActors);
 	}
+	*/
+
 }
 
 void AGruntBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	/*
 	TArray<AActor*> foundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), mClasstoFind, foundActors);
 	AActor* target = GetClosestPlayer(foundActors);
@@ -56,6 +56,9 @@ void AGruntBase::Tick(float DeltaTime)
 			mIsAttacking = true;
 		}
 	}
+
+
+	*/
 }
 
 //Used Fosters Code for getting closest player
@@ -84,10 +87,13 @@ AActor* AGruntBase::GetClosestPlayer(TArray<AActor*> Array)
 				{
 					closestPlayer = actor;
 					distance = dir.Size();
-					mDistanceToTarget = distance;
+					// mDistanceToTarget = distance;
 				}
 			}
 		}
 	}
+
+
 	return closestPlayer;
+
 }

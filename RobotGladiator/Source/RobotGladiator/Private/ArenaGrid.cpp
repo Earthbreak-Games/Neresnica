@@ -177,11 +177,11 @@ int AArenaGrid::SaveState(int index, bool freshState)
 	return result;
 }
 
-void AArenaGrid::GenerateArena(float chance, float scale)
+void AArenaGrid::GenerateArena(float scale)
 {
 	scale *= 0.001;
 	CalculateTilePositions(scale);
-	CalculateTileModifiers(chance);
+	CalculateTileModifiers();
 }
 
 void AArenaGrid::EraseHeightState(int index)
@@ -192,10 +192,16 @@ void AArenaGrid::EraseHeightState(int index)
 	}
 }
 
-void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, float padding)
+FSaveState AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, float padding)
 {
+	ClearTheBoard();
+
+	FSaveState result;
+
 	if (SavedStates.IsValidIndex(index))
 	{
+		result = SavedStates[index];
+
 		// Set heights from saved state
 		FloorHeights.Empty();
 		FloorHeights = SavedStates[index].mHeights;
@@ -263,7 +269,10 @@ void AArenaGrid::EditorLoadSaveState(int index, FVector origin, int radius, floa
 	else
 	{
 		SpawnFloor(origin, radius, padding);
+		result = FSaveState(FloorPieces.Num());
 	}
+
+	return result;
 }
 
 FSaveState AArenaGrid::LoadSaveStateData(UPARAM(ref) int&index, float scale)
@@ -425,10 +434,39 @@ void AArenaGrid::LoadModifiers(UPARAM(ref) FSaveState cur)
 			}
 			break;
 		}
+		case ModifierIDs::GRUNT:	// Spawn grunts
+		{
+			// Init spawn parameters
+			FActorSpawnParameters spawnParams;
+			spawnParams.Owner = this;
+			spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+			// Set spawn transform
+			FVector loc = FloorPieces[i]->GetActorLocation();
+			loc.Z = FloorHeights[i] + 1510.0f;	// Find a programmatic way to determine this
+			FRotator rot = this->GetActorRotation();
+
+			// Check if actor to spawn is valid
+			if (Grunt)
+			{
+				// Spawn new enemy
+				AActor* enemy = GetWorld()->SpawnActor<AActor>(Grunt, loc, rot, spawnParams);
+
+				// Child new enemy to the grid object
+				FAttachmentTransformRules attachRules = FAttachmentTransformRules::KeepWorldTransform;
+				enemy->AttachToActor(this, attachRules);
+
+				// Add the enemy to the array
+				Enemies.Add(enemy);
+			}
+			break;
+		}
 		default:
 			break;
 		}
 	}
+
+	
 }
 
 void AArenaGrid::ClearTheBoard()
@@ -443,9 +481,14 @@ void AArenaGrid::ClearTheBoard()
 	{
 		iter->Destroy();
 	}
+	for (AActor* iter : NavLinks)
+	{
+		iter->Destroy();
+	}
 	Enemies.Empty();
 	Toppers.Empty();
 	FloorHeights.Empty();
+	NavLinks.Empty();
 }
 
 // Called when the game starts or when spawned
@@ -483,31 +526,101 @@ void AArenaGrid::CalculateTilePositions(float scale)
 	}
 }
 
-void AArenaGrid::CalculateTileModifiers(float chance)
+void AArenaGrid::CalculateTileModifiers()
 {
-	// Clear previous modifiers and split remaining percentage into each modifier
+	// Clear previous modifiers and check to make sure percentage is correct
 	FloorModifiers.Empty();
-	float ratio = (100.0f - chance) / (ModifierIDs::NUM_MODIFIERS - 1);
+	float overallChance = PercentGrunt + PercentHeal + PercentJump + PercentPlain + PercentToxic;
 
-	// Generate new modifiers for each hex cell
-	float modifier;
-	for (int i = 0; i < FloorPieces.Num(); i++)
+	// If the percentage split is valid
+	if (overallChance <= 100.0)
 	{
-		// Generate a random number from 0 to 100 and set the modifier
-		modifier = mRand.FRandRange(0.0f, 100.0f);
-		if (modifier > chance)
+		// Split %100 into the blocks, erring on the side of plain if there are inaccuracies
+		float pctToxic = 100.0 - PercentToxic;
+		float pctJump = pctToxic - PercentJump;
+		float pctHeal = pctJump - PercentHeal;
+		float pctGrunt = pctHeal - PercentGrunt;
+		PercentPlain = pctGrunt;
+
+		// Generate new modifiers for each hex cell
+		for (int i = 0; i < FloorPieces.Num(); i++)
 		{
-			modifier -= chance;
-			modifier = StaticCast<int>(modifier / ratio) + 1;
+			float modifier;
+
+			// Generate a random number from 0 to 100 and set the modifier
+			modifier = mRand.FRandRange(0.0f, 100.0f);
+			if (modifier > pctToxic)
+			{
+				modifier = ModifierIDs::TOXIC_TOPPER;
+			}
+			else if (modifier > pctJump)
+			{
+				modifier = ModifierIDs::JUMP_TOPPER;
+			}
+			else if (modifier > pctHeal)
+			{
+				modifier = ModifierIDs::HEAL_TOPPER;
+			}
+			else if (modifier > pctGrunt)
+			{
+				modifier = ModifierIDs::GRUNT;
+			}
+			else
+			{
+				modifier = ModifierIDs::NONE;
+			}
+
+			// Store the generated modifier in the save state
+			FloorModifiers.Add(modifier);
 		}
+	}
+	// If the percentage split is invalid but not all plain
+	else
+	{
+		// Warn user
+		TIMEDDEBUGMESSAGE(5.0f, "Total Percentage %f is over 100%, using even percentages", overallChance)
+		
+		if (PercentPlain <= 100.0f)
+		{
+			// Split remaining percentage into each modifier
+			float ratio = (100.0f - PercentPlain) / (ModifierIDs::NUM_MODIFIERS - 1);
+
+			// Generate new modifiers for each hex cell
+			float modifier;
+			for (int i = 0; i < FloorPieces.Num(); i++)
+			{
+				// Generate a random number from 0 to 100 and set the modifier
+				modifier = mRand.FRandRange(0.0f, 100.0f);
+				if (modifier > PercentPlain)
+				{
+					modifier -= PercentPlain;
+					modifier = StaticCast<int>(modifier / ratio) + 1;
+				}
+				else
+				{
+					modifier = ModifierIDs::NONE;
+				}
+
+				// Store the generated modifier in the save state
+				FloorModifiers.Add(modifier);
+			}
+		}
+		// If the percentage split is invalid and it's all plain
 		else
 		{
-			modifier = ModifierIDs::NONE;
-		}
+			// Warn user
+			TIMEDDEBUGMESSAGE(5.0f, "Percent Plain %f is over 100%, are you sure you wanted to do that?", PercentPlain)
 
-		// Store the generated modifier in the save state
-		FloorModifiers.Add(modifier);
+			// Set every modifier to none
+			FloorModifiers.AddZeroed(FloorPieces.Num());
+		}
 	}
+
+	
+
+	// Generate a tile for the gladiator and set it to that
+	int gladiatorIndex = FGenericPlatformMath::CeilToInt(mRand.FRandRange(18.0f, FloorPieces.Num()));
+	FloorModifiers[gladiatorIndex] = ModifierIDs::GLADIATOR;
 }
 
 void AArenaGrid::CalculateRing(HexCell center, int radius)
@@ -524,12 +637,119 @@ void AArenaGrid::CalculateRing(HexCell center, int radius)
 			currentCell = GetNeighbor(currentCell, i);
 		}
 	}
+
 }
 
 // Called every frame
 void AArenaGrid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+// class UNavigationSystemV1;
+
+void AArenaGrid::CreateNavLinks()
+{
+	// left on top right on bottom - how to spawn links
+
+	// spawn nav link in world at location 
+	// AMyNavLinkProxy* NavLinkSpawnRef1 = Cast<AMyNavLinkProxy>(GetWorld()->SpawnActor<AActor>(NavLinkRef, FVector(x, y, z), FRotator(0,0,0), SpawnParams));
+	// set jump points of nav link (left on top, right on bottom)
+	// NavLinkSpawnRef1->Set_Jump_Points(FVector(relative X, relative Y, relative Z), FVector(relative X, relative Y, relative Z));
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Creating Nan Links"));
+	
+	// get spawn params
+	FActorSpawnParameters SpawnParams;
+	FVector loc;
+	float to_find_x;
+	float to_find_y;
+
+	// loop through all floor pieces
+	for (AActor* floor_piece : FloorPieces) {
+		loc = floor_piece->GetActorLocation();
+		
+		// loop through all faces
+		for (int i = 0; i < 1; i++)
+		{
+			// calculate direction to check
+			// okay i have no idea why this works mathamaticly but its good enough
+			to_find_x = ((Padding * 25) * cos(i)) + loc.X;
+			to_find_y = ((Padding * 25) * sin(i)) + loc.Y;
+
+			// make into vector
+			FVector to_find = FVector(to_find_x, to_find_y, loc.Z);
+
+			// run hit scan
+			FHitResult Outhit;
+
+			FCollisionQueryParams CollisionParams;
+			CollisionParams.AddIgnoredActor(floor_piece);
+			
+			// draw hitscan lines
+			// DrawDebugLine(GetWorld(), loc, to_find, FColor::Red, false, 100, 0, 3);
+
+			// preform hitscan
+			bool IsHit = false;
+			IsHit = GetWorld()->LineTraceSingleByChannel(Outhit, loc, to_find, ECC_Visibility, CollisionParams);
+
+			// if we find something
+			if (IsHit) {
+
+				// grab its location
+				if (Outhit.GetActor()) {
+
+				
+					FVector other_loc = (Outhit.GetActor()->GetActorLocation());
+					
+					// if it is lower
+					// if (other_loc.Z < loc.Z) {
+					
+						// check if the difference is greater than the threhhold
+						float diff = loc.Z - other_loc.Z;
+					
+						// if (diff > JumpDifferenceThreshhold) {
+						
+							// create jump point
+
+							// get middle of object
+							FVector mid = (other_loc + loc) / 2;
+						
+							// add a height offset to add jump points on top of objects
+							float height_offset = 1500;
+						
+
+							// DEBUG CODE
+							// FVector left_jump_world_loc = FVector(loc.X, loc.Y, loc.Z + height_offset);
+							// FVector right_jump_world_loc = FVector(other_loc.X, other_loc.Y, other_loc.Z + height_offset);
+							// DrawDebugLine(GetWorld(), left_jump_world_loc, right_jump_world_loc, FColor::Red, false, 100, 0, 3);
+
+							// spawn nav like between objects
+							AMyNavLinkProxy* NavLinkSpawnRef;
+							AActor* tmp = GetWorld()->SpawnActor<AActor>(NavLinkRef, mid, FRotator(0, 0, 0), SpawnParams);
+							NavLinkSpawnRef = Cast<AMyNavLinkProxy>(tmp);
+
+						
+
+							// add it to the array
+							NavLinks.Add(NavLinkSpawnRef);
+
+							// get jump points locations
+							FVector left_jump_rel_loc = FVector(loc.X - mid.X, loc.Y - mid.Y, loc.Z + height_offset - mid.Z);
+							FVector right_jump_rel_loc = FVector(other_loc.X - mid.X, other_loc.Y - mid.Y, other_loc.Z + height_offset - mid.Z);
+
+							// set jump point locations 
+							NavLinkSpawnRef->Set_Jump_Points(left_jump_rel_loc, right_jump_rel_loc);
+						//}
+					//}
+				}
+			}
+		}
+	}
+	
+
+
 
 }
 
