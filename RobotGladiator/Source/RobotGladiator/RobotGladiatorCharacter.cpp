@@ -48,7 +48,7 @@ ARobotGladiatorCharacter::ARobotGladiatorCharacter()
 	SwordAttackSpeed = BaseAttackSpeed;
 	AxeAttackSpeed = BaseAttackSpeed;
 	MaxAttackSpeed = 20.0f;
-	mMaxHealth = 200.0f;
+	mMaxHealth = 1000.0f;
 	mHealth = mMaxHealth;
 	BaseDamage = 50.0f;
 	SwordDamageMultiplier = 1.0f;
