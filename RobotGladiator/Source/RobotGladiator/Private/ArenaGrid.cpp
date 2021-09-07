@@ -709,7 +709,7 @@ void AArenaGrid::CreateNavLinks()
 						// check if the difference is greater than the threhhold
 						float diff = loc.Z - other_loc.Z;
 					
-						if (diff > 0) {
+						
 						
 							// create jump point
 
@@ -741,7 +741,7 @@ void AArenaGrid::CreateNavLinks()
 
 							// set jump point locations 
 							NavLinkSpawnRef->Set_Jump_Points(left_jump_rel_loc, right_jump_rel_loc);
-						}
+						
 					//}
 				}
 			}
