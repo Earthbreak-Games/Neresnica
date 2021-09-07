@@ -47,5 +47,8 @@
 			"Name": "NiagaraExtras",
 			"Enabled": true
 		}
+	],
+	"TargetPlatforms": [
+		"WindowsNoEditor"
 	]
 }
