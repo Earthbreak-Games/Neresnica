@@ -310,7 +310,7 @@ FSaveState AArenaGrid::LoadSaveStateData(UPARAM(ref) int&index, float scale)
 void AArenaGrid::LoadModifiers(UPARAM(ref) FSaveState cur)
 {
 	// Act on saved modifiers
-	for (int i = 0; i < cur.mModifiers.Num(); i++)
+	for (int i = 1; i < cur.mModifiers.Num(); i++)
 	{
 		switch (cur.mModifiers[i])
 		{
@@ -543,7 +543,7 @@ void AArenaGrid::CalculateTileModifiers()
 		PercentPlain = pctGrunt;
 
 		// Generate new modifiers for each hex cell
-		for (int i = 0; i < FloorPieces.Num(); i++)
+		for (int i = 1; i < FloorPieces.Num(); i++)
 		{
 			float modifier;
 

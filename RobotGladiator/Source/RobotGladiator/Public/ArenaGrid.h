@@ -18,7 +18,6 @@
 #include "MyNavLinkProxy.h"
 #include "DrawDebugHelpers.h"
 #include "Math/UnrealMathUtility.h"
-// #include "NavigationSystem.h"
 #include "ArenaGrid.generated.h"
 
 #define DEBUGMESSAGE(x, ...) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT(x), __VA_ARGS__));}
